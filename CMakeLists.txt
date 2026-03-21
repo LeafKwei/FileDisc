@@ -30,12 +30,21 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		include/def/types.hpp
 		include/def/version.hpp
 		include/jstp/HostStruct.hpp
-		include/err/FileDiscExcept.hpp
 		
-		src/err/FileDiscExcept.cpp
+		
+		
 		include/utility/strutil.hpp
 		src/utility/strutil.cpp
 		include/def/config.hpp
+		include/thread/ThreadManager.hpp
+		src/thread/ThreadManager.cpp
+		include/thread/ThreadJob.hpp
+		include/thread/ThreadFunc.hpp
+		include/thread/JobQueue.hpp
+		include/thread/Thread.hpp
+		include/thread/ManagerInf.hpp
+		include/thread/threadfuncs.hpp
+		include/def/err.hpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FileDisc APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
