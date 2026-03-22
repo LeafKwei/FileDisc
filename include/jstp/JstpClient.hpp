@@ -11,9 +11,9 @@ public:
     
 public:
     explicit JstpClient() =default;
-    HostVector discover(qint32 timeout) const; //发送广播，查询局域网内所有可用的JstpServer
-    ErrStruct connect(const HostStruct &host); //连接指定的主机
-    ErrStruct disconnect();                    //断开连接
+    auto discover(qint32 timeout) const -> HostVector; //发送广播，查询局域网内所有可用的JstpServer
+    auto connect(const HostStruct &host) -> ErrStruct; //连接指定的主机
+    auto disconnect() -> ErrStruct;                    //断开连接
     
 private:
     
