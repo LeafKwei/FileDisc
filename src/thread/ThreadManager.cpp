@@ -4,7 +4,10 @@
 #include "thread/ThreadManager.hpp"
 FILEDISC_BEGIN
 
-ThreadManager::ThreadManager() : runner_(jobQueue_)
+ThreadManager::ThreadManager(qint32 max) 
+    : max_(max)
+    , inf_{}
+    , jobQueue_(MAX_JOB)
 {
 
 }
@@ -14,7 +17,8 @@ auto ThreadManager::sendToQueue(JobPtr job) -> bool{
         createThread();
     }
     
-    return jobQueue_.append(job);
+    auto result = jobQueue_.append(job);
+    return result;
 }
 
 auto ThreadManager::info() const noexcept -> RoInfo{
@@ -22,12 +26,12 @@ auto ThreadManager::info() const noexcept -> RoInfo{
 }
 
 auto ThreadManager::createThread() -> void{
-    if(threads_.size() >= MAX_THREAD){  //线程数量达到上限时，不再创建线程
+    if(threads_.size() >= max_){  //线程数量达到上限时，不再创建线程
         return;
     }
     
     QThread *thread = new QThread;
-    ThreadRunner *runner = new ThreadRunner;
+    ThreadRunner *runner = new ThreadRunner(jobQueue_);
     if(thread == nullptr || runner == nullptr){ //内存分配失败时，直接返回
         delete thread;
         delete runner;
@@ -50,18 +54,19 @@ auto ThreadManager::createThread() -> void{
 }
 
 auto ThreadManager::updateManager(QThread *thread, ThreadRunner *runner) -> void{
-    connect(runner, SIGNAL(to_jobstart()), this, SLOT(at_jobstart()));
-    connect(runner, SIGNAL(to_jobdone(qint32,ErrCode)), this, SLOT(at_jobdone(qint32,ErrCode)));
+    connect(runner, SIGNAL(to_jobstart(qint32)), this, SLOT(at_jobstart(qint32)));
+    connect(runner, SIGNAL(to_jobdone(qint32,Result<QVariant>)), this, SLOT(at_jobdone(qint32,Result<QVariant>)));
     inf_.setFreeThreadsCount(inf_.countFreeThreads() + 1);
     threads_.push_back({thread, runner});
 }
 
-void ThreadManager::at_jobstart(){
+void ThreadManager::at_jobstart(qint32 jobid){
     inf_.setFreeThreadsCount(inf_.countFreeThreads() - 1);
 }
 
-void ThreadManager::at_jobdone(qint32 jobid, ErrCode code){
+void ThreadManager::at_jobdone(qint32 jobid, Result<QVariant> result){
     inf_.setFreeThreadsCount(inf_.countFreeThreads() + 1);
+    emit to_jobreturn(jobid, result);
 }
 
 

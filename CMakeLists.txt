@@ -16,7 +16,6 @@ set(PROJECT_SOURCES
 	
 		
 		
-		
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -46,6 +45,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		src/thread/ThreadManager.cpp
 		src/thread/ManagerInf.cpp
 		src/thread/JobQueue.cpp
+		src/client/client.cpp
+		
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FileDisc APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -92,3 +93,7 @@ install(TARGETS FileDisc
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(FileDisc)
 endif()
+
+
+
+

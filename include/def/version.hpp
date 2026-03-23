@@ -1,7 +1,7 @@
 #ifndef VERSION_HPP
 #define VERSION_HPP
 
-#define FILEDISC_BEGIN namespace{
+#define FILEDISC_BEGIN namespace fidi{
 #define FILEDISC_END }
 
 FILEDISC_BEGIN
