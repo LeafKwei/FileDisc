@@ -11,14 +11,14 @@ FILEDISC_BEGIN
 class JobQueue{
 public:
     explicit JobQueue(qint32 max);
-    auto append(JobPtr job) -> bool; //添加任务到队列尾部，同时唤醒一个线程(任务执行完毕后会自动销毁)
-    auto obtain() -> JobPtr; //获取队列首个任务，队列为空则阻塞当前线程
+    auto append(Job *job) -> bool; //添加任务到队列尾部，同时唤醒一个线程(任务执行完毕后会自动销毁)
+    auto obtain() -> Job*; //获取队列首个任务，队列为空则阻塞当前线程
 
 private:
     qint32 max_;
     QMutex mutex_;
     QWaitCondition cond_hasjob_;  //消费者线程在任务队列为空时，在此条件上等待
-    QVector<JobPtr> jobs_;
+    QVector<Job*> jobs_;
 };
 
 FILEDISC_END

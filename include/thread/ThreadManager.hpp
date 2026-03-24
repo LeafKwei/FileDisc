@@ -21,7 +21,7 @@ public:
 
 public:
     explicit ThreadManager(qint32 max);
-    auto sendToQueue(JobPtr job) -> bool; //发送任务到任务队列中，如果任务数量已达到上限，则返回false
+    auto sendToQueue(Job *job) -> bool; //发送任务到任务队列中，如果任务数量已达到上限，则返回false
     auto info() const noexcept -> RoInfo; //返回ManagerInfo的只读引用
 
 private:
@@ -34,12 +34,9 @@ private:
     JobQueue jobQueue_;
     ThreadVector threads_;
     
-signals:
-    void to_jobreturn(qint32 jobid, Result<QVariant> result);
-    
-private slots:
-    void at_jobstart(qint32 jobid);
-    void at_jobdone(qint32 jobid, Result<QVariant> result);
+public slots:
+    void at_jobstart();
+    void at_jobdone();
 };
 
 FILEDISC_END

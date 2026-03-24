@@ -14,12 +14,12 @@ public:
 private:
     JobQueue &jobQueue_;
 
+signals:
+    void to_jobstart(); //线程获取到任务并开始执行时
+    void to_jobdone(); //线程将任务执行完毕后
+
 public slots:
     auto run() -> void;
-    
-signals:
-    void to_jobstart(qint32 jobid); //线程获取到任务并开始执行时
-    void to_jobdone(qint32 jobid, Result<QVariant> result); //线程将任务执行完毕后
 };
 
 FILEDISC_END

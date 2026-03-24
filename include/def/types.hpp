@@ -2,7 +2,7 @@
 #define TYPES_HPP
 
 #include <QtGlobal>
-#include <QPair>
+#include <QSharedPointer>
 #include "def/err.hpp"
 FILEDISC_BEGIN
 

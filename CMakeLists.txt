@@ -45,7 +45,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		src/thread/ThreadManager.cpp
 		src/thread/ManagerInf.cpp
 		src/thread/JobQueue.cpp
-		src/client/client.cpp
+		src/client/test_main.cpp
+		src/client/tcp_cli.cpp
+		src/client/tcp_srv.cpp
+		include/client/test_main.hpp
 		
     )
 # Define target properties for Android with Qt 6 as:

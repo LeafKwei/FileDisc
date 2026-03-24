@@ -10,8 +10,8 @@ public:
     using RoQHostAddress = const QHostAddress&;
 
 public:
-    explicit HostSruct(QHostAddress addr, quint16 port=0);
-    explicit HostSruct(qint32 addr, quint16 port=0);
+    explicit HostStruct(QHostAddress addr, quint16 port=0);
+    explicit HostStruct(qint32 addr, quint16 port=0);
     RoQHostAddress ip() const noexcept;
     quint16 port() const noexcept;
 private:

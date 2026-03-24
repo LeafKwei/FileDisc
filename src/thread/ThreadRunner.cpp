@@ -5,17 +5,22 @@ FILEDISC_BEGIN
 
 ThreadRunner::ThreadRunner(JobQueue &jobQueue) : jobQueue_(jobQueue)
 {
-
+    qDebug() << "thread: " << reinterpret_cast<quint64>(this) << "created...";
 }
 
 auto ThreadRunner::run() -> void{
     /* 从任务队列中取出任务并执行 */
     while(true){
-        JobPtr job = jobQueue_.obtain();
-        if(job.isNull()) qDebug() << "Fuckkkkk2!";
-        emit to_jobstart(job -> id());
-        auto result = job -> run();
-        emit to_jobdone(job -> id(), result);
+        /* 获取任务对象，同时连接删除函数以便自动释放 */
+        Job *job = jobQueue_.obtain();
+        
+        /* 执行任务并发送信号 */
+        emit to_jobstart();
+        job -> run();
+        emit to_jobdone();
+        
+        /* 删除任务 */
+        delete job;
     }
 }
 
