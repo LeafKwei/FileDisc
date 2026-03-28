@@ -36,7 +36,7 @@ public:
     
     void run(){
         QThread::msleep(1000);
-        for(int i = 0; i < 100; i++){
+        for(int i = 0; i < 20; i++){
             auto job = new TestJob;
             QThread::msleep(500);
             mngr_.sendToQueue(job);
@@ -55,29 +55,43 @@ public:
     }
 
     void testThread(){
+        qDebug() << "test-tid: " <<QThread::currentThreadId();
         auto creator = new QThread;
         auto worker = new Worker(manager);
         worker -> moveToThread(creator); //Fuck you!!!!
         connect(creator, &QThread::started, worker, [worker]() -> void {
+            qDebug() << "run-tid: " <<QThread::currentThreadId();
             worker -> run();
         });
         connect(creator, SIGNAL(finished()), creator, SLOT(deleteLater()));
         connect(creator, SIGNAL(finished()), worker, SLOT(deleteLater()));
         creator -> start();
-        connect(this, SIGNAL(fuck()), this, SLOT(do_fuck()));
-        emit fuck();
-    }
-
-signals:
-    void fuck();
-    
-private slots:
-    void do_fuck(){
-        qDebug() << "DO FUCK!!!";
     }
 
 private:
     ThreadManager manager;
 };
+
+// class Work : public QObject{
+//     Q_OBJECT
+// signals:
+// 	void to_heartbeat(qint32 i);
+    
+// public slots:
+// 	void run(){
+// 		for(int i = 0; i < 1000; i++){
+// 			QThread::msleep(500);
+// 			emit to_heartbeat(i);
+// 		}
+// 	}
+// };
+
+// class Listener : public QObject{
+// 	Q_OBJECT	
+// public slots:
+//     void from_heartbeat(qint32 i){
+//         qDebug() << "receive heartbeat: " << i << ", heart-tid: " << QThread::currentThreadId();
+//     }
+// };
 
 #endif

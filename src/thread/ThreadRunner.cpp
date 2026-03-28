@@ -20,7 +20,7 @@ auto ThreadRunner::run() -> void{
         emit to_jobdone();
         
         /* 删除任务 */
-        delete job;
+        job -> deleteLater();
     }
 }
 

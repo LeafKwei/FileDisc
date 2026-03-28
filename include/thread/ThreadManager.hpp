@@ -21,7 +21,7 @@ public:
 
 public:
     explicit ThreadManager(qint32 max);
-    auto sendToQueue(Job *job) -> bool; //发送任务到任务队列中，如果任务数量已达到上限，则返回false
+    auto sendToQueue(Job *job) -> bool; //发送任务到任务队列中，如果任务数量已达到上限，则返回false; Job会通过调用deleteLater自动删除，需要确保创建该Job的线程运行了事件循环
     auto info() const noexcept -> RoInfo; //返回ManagerInfo的只读引用
 
 private:

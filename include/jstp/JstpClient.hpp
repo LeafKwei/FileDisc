@@ -9,18 +9,10 @@ FILEDISC_BEGIN
 class JstpClient : public QObject{
     Q_OBJECT
 public:
-    using HostVector = QVector<HostStruct>;
-    
-public:
     explicit JstpClient() =default;
     
+    
 private:
-    
-    
-signals:
-    
-    
-private slots:
     
 };
 

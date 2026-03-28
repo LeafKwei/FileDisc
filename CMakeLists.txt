@@ -49,6 +49,12 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		src/client/tcp_cli.cpp
 		src/client/tcp_srv.cpp
 		include/client/test_main.hpp
+		include/jstp/RequestHook.hpp
+		include/jstp/JstpRequest.hpp
+		include/server/server_holder.hpp
+		src/server/server_holder.cpp
+		
+		
 		
     )
 # Define target properties for Android with Qt 6 as:

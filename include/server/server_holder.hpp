@@ -1,0 +1,4 @@
+#ifndef SERVER_HOLDER_HPP
+#define SERVER_HOLDER_HPP
+
+#endif // SERVER_HOLDER_HPP
