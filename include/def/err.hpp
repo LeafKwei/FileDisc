@@ -5,17 +5,33 @@
 #include <QString>
 #include "def/version.hpp"
 FILEDISC_BEGIN
+/*///////// 定义错误处理相关的数据结构 /////////*/
 
-/* 使用ErrStruct保存错误码和字面量形式的错误信息 */
+using ErrStr = QString;
+
+/* 将程序中的错误枚举为错误码 */
 enum class ErrCode{
-    OK = 0
+    OK = 0,
+    TCPListen,
+    UDPBind
 };
 
-struct ErrStruct{
-    ErrCode err;
-    const char *msg;
+/* 错误信息的封装类 */
+class ErrBox{
+public:
+    explicit ErrBox(ErrCode code=ErrCode::OK, ErrStr msg="");
+    auto errcode() const noexcept -> ErrCode;
+    auto errmsg() const noexcept -> ErrStr;
+    auto hasError() const noexcept -> bool;
+    operator bool() const noexcept;
+    
+private:
+    ErrCode code_;
+    ErrStr  msg_;
 };
 
+/* 为ErrBox增加一个OkBox的别名。在无错误时使用OkBox返回可以让语义更清晰 */
+using OkBox = ErrBox;
 
 FILEDISC_END
 #endif

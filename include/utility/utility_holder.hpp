@@ -1,0 +1,4 @@
+#ifndef UTILITY_HOLDER_HPP
+#define UTILITY_HOLDER_HPP
+
+#endif // UTILITY_HOLDER_HPP

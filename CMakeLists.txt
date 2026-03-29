@@ -29,12 +29,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		include/def/types.hpp
 		include/def/version.hpp
 		include/jstp/HostStruct.hpp
-		
-		include/utility/strutil.hpp
-		src/utility/strutil.cpp
 		include/def/config.hpp
-		
-
 		include/def/err.hpp
 		include/thread/ThreadRunner.hpp
 		include/thread/Job.hpp
@@ -45,14 +40,18 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		src/thread/ThreadManager.cpp
 		src/thread/ManagerInf.cpp
 		src/thread/JobQueue.cpp
-		src/client/test_main.cpp
-		src/client/tcp_cli.cpp
-		src/client/tcp_srv.cpp
-		include/client/test_main.hpp
+		
+		
+		src/client/test_jstpclient.cpp
+		
 		include/jstp/RequestHook.hpp
 		include/jstp/JstpRequest.hpp
 		include/server/server_holder.hpp
 		src/server/server_holder.cpp
+		include/utility/utility_holder.hpp
+		src/utility/mixed.cpp
+		include/def/req.hpp
+		src/client/test_jstpserver.cpp
 		
 		
 		
