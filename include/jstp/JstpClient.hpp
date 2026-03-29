@@ -9,7 +9,7 @@ FILEDISC_BEGIN
 class JstpClient : public QObject{
     Q_OBJECT
 public:
-    explicit JstpClient() =default;
+    explicit JstpClient();
     
     
 private:

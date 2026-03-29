@@ -48,10 +48,11 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		include/jstp/JstpRequest.hpp
 		include/server/server_holder.hpp
 		src/server/server_holder.cpp
-		include/utility/utility_holder.hpp
+		
 		src/utility/mixed.cpp
 		include/def/req.hpp
 		src/client/test_jstpserver.cpp
+		include/utility/LocalLogger.hpp
 		
 		
 		

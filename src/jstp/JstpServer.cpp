@@ -1,3 +1,4 @@
+#include <QDate>
 #include "def/config.hpp"
 #include "jstp/JstpServer.hpp"
 FILEDISC_BEGIN
@@ -9,9 +10,12 @@ JstpServer::JstpServer()
     
 }
 
-auto JstpServer::listen() noexcept -> ErrBox{
+auto JstpServer::listen() -> ErrBox{
     /* 初始化信号连接 */
     initQConnections();
+    
+    /* 重启Logger */
+    logger_.restartLogger();
     
     /* 开启对TCP请求的监听 */
     if(!tcpserver_.listen(QHostAddress::Any, port_)){
@@ -27,11 +31,26 @@ auto JstpServer::listen() noexcept -> ErrBox{
     return OkBox();
 }
 
-auto JstpServer::setPort(quint16 port) noexcept -> void{
+auto JstpServer::setPort(quint16 port) -> void{
     port_ = port;
 }
 
-auto JstpServer::addHook(RequestHook hook) noexcept -> void{
+auto JstpServer::setSharedDirectory(const QString &path) -> void{
+    auto backup = sharedDir_.path();
+    sharedDir_.setPath(path);
+    if(!sharedDir_.exists()){
+        sharedDir_.setPath(backup);
+    }   
+}
+
+auto JstpServer::setLogger(const QString &path, LogLevel level) -> void{
+    logger_.setName("server");
+    logger_.setLevel(level);
+    logger_.setBufferSize(LOGBUFFER_SIZE);
+    logger_.setOutputPath(makeLogPath());
+}
+
+auto JstpServer::addHook(RequestHook hook) -> void{
     hooks_.push_back(hook);
 }
 
@@ -51,6 +70,11 @@ auto JstpServer::initBroadcast() -> ErrBox{
 auto JstpServer::initQConnections() -> void{
     connect(&tcpserver_, SIGNAL(newConnection()), this, SLOT(at_requestComing()));
     connect(&broadcast_, SIGNAL(readyRead()), this, SLOT(at_broadcastComing()));
+}
+
+auto JstpServer::makeLogPath() -> QString{
+    QDate date = QDate::currentDate();
+    return date.toString("yyyyMMdd" + "-" + logger_.name() + ".txt");
 }
 
 void JstpServer::at_requestComing(){
