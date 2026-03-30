@@ -53,6 +53,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		include/def/req.hpp
 		src/client/test_jstpserver.cpp
 		include/utility/LocalLogger.hpp
+		include/init/init.hpp
+		include/jstp/JstpResponse.hpp
 		
 		
 		

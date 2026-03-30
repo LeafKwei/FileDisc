@@ -4,6 +4,7 @@
 #include "def/types.hpp"
 FILEDISC_BEGIN
 
+/*///////// ThreadManager的信息对象，记录空闲线程数等信息 /////////*/
 class ManagerInf{
 public:
     explicit ManagerInf() =default;

@@ -11,6 +11,7 @@ constexpr qint32 MAX_JOB = 64;    //JobQueue允许缓存的最大任务数
 constexpr qint32 MAX_THRAED = 8;  //ThreadManager允许创建的最大线程数
 constexpr quint32 LOGBUFFER_SIZE = 65535; //最大日志缓存长度
 constexpr quint16 SERVER_PORT = 7981; //Server监听的端口
+constexpr quint16 CLIENT_PORT = 7982; //Client监听的端口
 
 FILEDISC_END
 #endif

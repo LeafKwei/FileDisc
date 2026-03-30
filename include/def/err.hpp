@@ -16,7 +16,7 @@ enum class ErrCode{
     UDPBind
 };
 
-/* 错误信息的封装类 */
+/* 错误信息的封装类(在mixed.cpp中实现) */
 class ErrBox{
 public:
     explicit ErrBox(ErrCode code=ErrCode::OK, ErrStr msg="");

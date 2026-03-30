@@ -6,6 +6,7 @@
 FILEDISC_BEGIN
 class JobQueue;
 
+/*///////// QThread线程会直接执行此对象的run函数而非任务，然后通过该函数依次执行任务队列中的任务 /////////*/
 class ThreadRunner : public QObject{
     Q_OBJECT
 public:
@@ -19,7 +20,7 @@ signals:
     void to_jobdone(); //线程将任务执行完毕后
 
 public slots:
-    auto run() -> void;
+    void run();
 };
 
 FILEDISC_END

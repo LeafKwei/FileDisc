@@ -16,14 +16,13 @@
 #include "utility/LocalLogger.hpp"
 FILEDISC_BEGIN
 
-/* 负责监听指定端口收到的JSTP请求 */
+/*///////// 实现了JSTP协议的服务端 /////////*/
 class JstpServer : public QObject{
     Q_OBJECT
 public:
     explicit JstpServer();
-    auto listen() -> ErrBox; //开启异步监听
+    auto listen() -> ErrBox; //异步监听来自客户端的请求(TCP)和广播(UDP)
     auto setPort(quint16 port) -> void; //设置监听的外部client端口
-    auto setLogger(const QString &path, LogLevel level) -> void; //设置日志存储目录以及日志级别，错误的路径将被忽略
     auto setSharedDirectory(const QString &path) -> void; //设置共享目录所在路径，如果该目录不存在，则维持旧路径
     auto addHook(RequestHook hook) -> void; //添加请求钩子，可自由修改请求内容，同时也可过滤请求(通过返回false)
 
@@ -37,7 +36,6 @@ private:
     QDir sharedDir_;
     QVector<RequestHook> hooks_;
     ThreadManager threads_;
-    LocalLogger logger_;
     QTcpServer tcpserver_;
     QUdpSocket broadcast_;
     

@@ -8,6 +8,7 @@
 #include "thread/Job.hpp"
 FILEDISC_BEGIN
 
+/*///////// 任务队列，发送给ThreadManager的任务会缓存到此队列，然后由线程依次取出执行 /////////*/
 class JobQueue{
 public:
     explicit JobQueue(qint32 max);

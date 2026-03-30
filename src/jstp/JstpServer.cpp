@@ -5,7 +5,7 @@ FILEDISC_BEGIN
 
 JstpServer::JstpServer()
     : threads_(MAX_THRAED)
-    , port_(0)
+    , port_(SERVER_PORT)
 {
     
 }
@@ -13,9 +13,6 @@ JstpServer::JstpServer()
 auto JstpServer::listen() -> ErrBox{
     /* 初始化信号连接 */
     initQConnections();
-    
-    /* 重启Logger */
-    logger_.restartLogger();
     
     /* 开启对TCP请求的监听 */
     if(!tcpserver_.listen(QHostAddress::Any, port_)){
@@ -41,13 +38,6 @@ auto JstpServer::setSharedDirectory(const QString &path) -> void{
     if(!sharedDir_.exists()){
         sharedDir_.setPath(backup);
     }   
-}
-
-auto JstpServer::setLogger(const QString &path, LogLevel level) -> void{
-    logger_.setName("server");
-    logger_.setLevel(level);
-    logger_.setBufferSize(LOGBUFFER_SIZE);
-    logger_.setOutputPath(makeLogPath());
 }
 
 auto JstpServer::addHook(RequestHook hook) -> void{

@@ -1,6 +1,6 @@
 #include "def/err.hpp"
 FILEDISC_BEGIN
-/* 此源文件用于收集各种简短工具类的函数实现 */
+/*///////// 此源文件用于收集各种简短工具类的函数实现 /////////*/
 /* ErrBox */
 ErrBox::ErrBox(ErrCode code, ErrStr msg)
     : code_(code)

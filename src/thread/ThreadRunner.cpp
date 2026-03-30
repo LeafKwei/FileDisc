@@ -8,7 +8,7 @@ ThreadRunner::ThreadRunner(JobQueue &jobQueue) : jobQueue_(jobQueue)
     qDebug() << "thread: " << reinterpret_cast<quint64>(this) << "created...";
 }
 
-auto ThreadRunner::run() -> void{
+void ThreadRunner::run(){
     /* 从任务队列中取出任务并执行 */
     while(true){
         /* 获取任务对象，同时连接删除函数以便自动释放 */

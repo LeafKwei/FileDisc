@@ -9,10 +9,11 @@
 #include "thread/JobQueue.hpp"
 #include "thread/ManagerInf.hpp"
 class QThread;
-
 FILEDISC_BEGIN
+
 class ThreadRunner;
 
+/*///////// 创建和管理线程，用户可将任务发送给此对象以便由线程执行 /////////*/
 class ThreadManager : public QObject{
     Q_OBJECT
 public:

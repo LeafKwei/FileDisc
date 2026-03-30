@@ -7,6 +7,7 @@
 #include "def/types.hpp"
 FILEDISC_BEGIN
 
+/*///////// 任务接口，ThreadManager的用户需要自行实现此接口以便将任务交给前者执行 /////////*/
 class Job : public QObject{
     Q_OBJECT
 public:
