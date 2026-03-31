@@ -1,5 +1,5 @@
-#ifndef JSTPSERVER_H
-#define JSTPSERVER_H
+#ifndef JSTPSERVER_HPP
+#define JSTPSERVER_HPP
 
 #include <QDir>
 #include <QObject>
@@ -11,7 +11,7 @@
 #include "def/err.hpp"
 #include "def/types.hpp"
 #include "jstp/RequestHook.hpp"
-#include "jstp/JstpRequest.hpp"
+#include "jstp/JstpPayload.hpp"
 #include "thread/ThreadManager.hpp"
 #include "utility/LocalLogger.hpp"
 FILEDISC_BEGIN

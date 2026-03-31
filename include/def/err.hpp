@@ -13,7 +13,8 @@ using ErrStr = QString;
 enum class ErrCode{
     OK = 0,
     TCPListen,
-    UDPBind
+    UDPBind,
+    BadJson
 };
 
 /* 错误信息的封装类(在mixed.cpp中实现) */

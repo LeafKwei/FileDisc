@@ -1,11 +1,11 @@
-#ifndef JSTPCLIENT_H
-#define JSTPCLIENT_H
+#ifndef JSTPCLIENT_HPP
+#define JSTPCLIENT_HPP
 
 #include <QObject>
 #include <QUdpSocket>
 #include "def/err.hpp"
 #include "def/types.hpp"
-#include "jstp/JstpRequest.hpp"
+#include "jstp/JstpPayload.hpp"
 FILEDISC_BEGIN
 
 /*///////// 实现了JSTP协议的客户端 /////////*/
