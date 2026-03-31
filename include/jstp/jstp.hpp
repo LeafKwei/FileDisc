@@ -25,6 +25,9 @@ enum class RspType{
 constexpr const char *JSTP_TYPE = "type";
 constexpr const char *JSTP_LKEY = "long_key";
 constexpr const char *JSTP_SKEY = "short_key";
+constexpr const char *JSTP_BEGIN = "begin_path";
+constexpr const char *JSTP_TARGET = "target";
+constexpr const char *JSTP_TARGETSIZE = "target_size";
 constexpr const char *JSTP_HOST = "host";
 constexpr const char *JSTP_HOST_IP = "ip";
 constexpr const char *JSTP_HOST_PORT = "port";
@@ -42,7 +45,7 @@ struct JstpHostField{
 
 struct JstpFileField{
     QString name;
-    quint64 size;
+    qint64 size;
 };
 
 struct JstpDirField{

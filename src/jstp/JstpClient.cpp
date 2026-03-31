@@ -38,10 +38,12 @@ auto JstpClient::broadcastToLAN() -> ErrBox{
     if(err){
         return err;
     }
+    
+    return OkBox();
 }
 
 auto JstpClient::request(ArgHolder) -> Result<quint32>{
-    
+    return Result<quint32>{0, ErrBox()};
 }
 
 auto JstpClient::setPort(qint16 port) -> void{
@@ -49,11 +51,11 @@ auto JstpClient::setPort(qint16 port) -> void{
 }
 
 auto JstpClient::sendHostRequest(ArgHolder) -> ErrBox{
-
+    return OkBox();
 }
 
 auto JstpClient::makeHostRequest() -> ArgHolder{
-
+    return {};
 }
 
 auto JstpClient::initBroadcast(QUdpSocket &broadcast) -> ErrBox{
@@ -70,7 +72,7 @@ auto JstpClient::initBroadcast(QUdpSocket &broadcast) -> ErrBox{
 }
 
 auto JstpClient::initHostsock() -> ErrBox{
-    
+    return OkBox();
 }
 
 auto JstpClient::initQConnections() -> void{

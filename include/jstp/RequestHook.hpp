@@ -7,7 +7,7 @@
 FILEDISC_BEGIN
 
 /*///////// 对JSTP请求进行hook的函数接口 /////////*/
-using RequestHook = std::function<bool(JstpRequest &req)>;
+using RequestHook = std::function<bool(JstpPayload &payload)>;
 
 FILEDISC_END
 #endif

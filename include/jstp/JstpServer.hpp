@@ -29,7 +29,6 @@ public:
 private:
     auto initBroadcast() -> ErrBox;
     auto initQConnections() -> void;
-    auto makeLogPath() -> QString;
     
 private:
     quint16 port_;

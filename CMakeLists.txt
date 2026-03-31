@@ -28,7 +28,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		include/jstp/JstpClient.hpp
 		include/def/types.hpp
 		include/def/version.hpp
-		include/jstp/HostStruct.hpp
+		
 		include/def/config.hpp
 		include/def/err.hpp
 		include/thread/ThreadRunner.hpp

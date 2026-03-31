@@ -11,10 +11,9 @@ FILEDISC_BEGIN
 /*///////// 对JSTP协议JSON部分的封装，可转换/被转换为JSON /////////*/
 class JstpPayload{
 public:
-    constexpr static qint32 FLAG_ZERO = 0;
-    constexpr static qint32 FLAG_HOST = 1;
-    constexpr static qint32 FLAG_FILES = 1 << 1;
-    constexpr static qint32 FLAG_DIRS = 1 << 2;
+    constexpr static qint32 FLAG_HOST = 1;  //具有host字段
+    constexpr static qint32 FLAG_FILES = 1 << 1; //具有files字段
+    constexpr static qint32 FLAG_DIRS = 1 << 2;  //具有dirs字段
     
 public:
     explicit JstpPayload();
@@ -27,6 +26,7 @@ public:
     auto getFileField() -> QVector<JstpFileField>; //获取文件字段组成的Vector
     auto getDirField() -> QVector<JstpDirField>;   //获取目录字段组成的Vector
     auto fromJson(const QString &json) -> ErrBox;  //从json字符串中解析出请求信息
+    auto fromJson(const QByteArray &json) -> ErrBox; //从json字节数组中解析出请求信息
     auto hasFlag(qint32 flag) -> bool; //检查是否含有指定的flag
     auto setFlag(qint32 flag) -> void; //设置flag
     auto unsetFlag(qint32 flag) -> void; //取消flag
@@ -38,6 +38,10 @@ private:
     auto takeFiles(QJsonObject &obj) -> void;
     auto takeDirs(QJsonObject &obj) -> void;
     auto takePairs(QJsonObject &obj) -> void;
+    auto fillPairs(QJsonObject &obj) -> void;
+    auto fillHost(QJsonObject &obj) -> void;
+    auto fillFiles(QJsonObject &obj) -> void;
+    auto fillDirs(QJsonObject &obj) -> void;
     
 private:
     qint32 flag_;

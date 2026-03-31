@@ -62,11 +62,6 @@ auto JstpServer::initQConnections() -> void{
     connect(&broadcast_, SIGNAL(readyRead()), this, SLOT(at_broadcastComing()));
 }
 
-auto JstpServer::makeLogPath() -> QString{
-    QDate date = QDate::currentDate();
-    return date.toString("yyyyMMdd" + "-" + logger_.name() + ".txt");
-}
-
 void JstpServer::at_requestComing(){
     qDebug() << "Get TCP Request...";
 }
