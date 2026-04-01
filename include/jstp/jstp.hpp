@@ -5,7 +5,8 @@
 #include "def/types.hpp"
 FILEDISC_BEGIN
 /*///////// 请求头 //////////*/
-constexpr qint32 HEAD_SIZE = ((sizeof("JSTP") - 1) + sizeof(qint32));
+constexpr const char *HEAD = "JSTP";
+constexpr qint32 HEAD_SIZE = ((sizeof("JSTP") - 1) + sizeof(quint32));
 
 /*///////// 定义请求类型 /////////*/
 enum class ReqType{

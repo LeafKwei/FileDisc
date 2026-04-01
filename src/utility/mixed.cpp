@@ -2,11 +2,18 @@
 FILEDISC_BEGIN
 /*///////// 此源文件用于收集各种简短工具类的函数实现 /////////*/
 /* ErrBox */
-ErrBox::ErrBox(ErrCode code, ErrStr msg)
+ErrBox::ErrBox(ErrCode code)
+    : code_(code)
+    , msg_("OK.")
+{
+
+}
+
+ErrBox::ErrBox(ErrCode code, const ErrStr &msg)
     : code_(code)
     , msg_(msg)
 {
-
+    
 }
 
 auto ErrBox::errcode() const noexcept -> ErrCode{

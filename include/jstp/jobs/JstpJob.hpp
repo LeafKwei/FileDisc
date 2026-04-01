@@ -7,15 +7,15 @@
 FILEDISC_BEGIN
 
 class JstpJob : public Job{
+    Q_OBJECT
 public:
-    explicit JstpJob(quint32 id);
-
-    auto isNull() -> bool;  //检查Job内部的payload是否分配成功
+    explicit JstpJob(qint32 id);
+    auto noPayload() -> bool;  //检查Job内部的payload是否分配成功
     auto payload() -> JstpPayload&; //获取payload的引用
-    auto id() -> quint32 override;
+    auto id() const noexcept -> qint32 override;
     
 private:
-    quint32 id_;
+    qint32 id_;
     QSharedPointer<JstpPayload> payload_;
 };
 

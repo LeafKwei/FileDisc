@@ -1,18 +1,13 @@
 #include "jstp/jobs/JstpJob.hpp"
 FILEDISC_BEGIN
 
-JstpJob::JstpJob(quint32 id) 
+JstpJob::JstpJob(qint32 id) 
     : id_(id)
 {
-    /* 如果内存分配出错，则首先捕获异常，然后将指针显式置空 */
-    try{
-        payload_ = new JstpPayload;
-    }catch(std::exception &e){
-        payload_ = nullptr;
-    }
+    payload_ = QSharedPointer<JstpPayload>::create(); //用户在使用前需通过noPayload检查是否可用
 }
 
-auto JstpJob::isNull() -> bool{
+auto JstpJob::noPayload() -> bool{
     return payload_ == nullptr;
 }
 
@@ -20,8 +15,8 @@ auto JstpJob::payload() -> JstpPayload&{
     return *payload_;
 }
 
-auto JstpJob::id() -> quint32 override{
-    return quint32;
+auto JstpJob::id() const noexcept -> qint32{
+    return id_;
 }
 
 FILEDISC_END

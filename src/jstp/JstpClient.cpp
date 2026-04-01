@@ -1,9 +1,12 @@
 #include "def/config.hpp"
 #include "jstp/JstpClient.hpp"
+#include "jstp/jobs/RequesHostJob.hpp"
 FILEDISC_BEGIN
 
 JstpClient::JstpClient()
-    : port_(CLIENT_PORT)
+    : threads_(MAX_THRAED)
+    , port_(CLIENT_PORT)
+    , jobid_(0)
 {
 
 }
@@ -23,20 +26,36 @@ auto JstpClient::initClient() -> ErrBox{
     return OkBox();
 }
 
-auto JstpClient::requestHost() -> Result<quint32>{
+auto JstpClient::requestHost() -> Result<qint32>{
+    /* 创建任务对象 */
+    auto jobid = nextJobId();
+    RequesHostJob *reqjob = new (std::nothrow) RequesHostJob(jobid, broadsock_);
+    if(reqjob == nullptr || reqjob -> noPayload()){
+        return {-1, ErrBox(ErrCode::JobInit, "Failed to alloc mem for job.")};
+    }
     
+    /* 初始化任务 */
+    
+    
+    /* 发送任务到线程池 */
+    if(!threads_.sendToQueue(reqjob)){
+        delete reqjob; //虽然想用智能指针，但QT里貌似不适合用
+        return {-1, ErrBox(ErrCode::Busy, "Job queue is full.")};
+    }
+    
+    return {jobid, OkBox()};
 }
 
 auto JstpClient::requestFile(const JstpHostField &host, 
-    const QString &beginPath, const QString &targetName) -> Result<quint32>
+    const QString &beginPath, const QString &targetName) -> Result<qint32>
 {
-    
+    return {-1, ErrBox(ErrCode::Busy, "Job queue is full.")};
 }
 
 auto JstpClient::requestDir(const JstpHostField &host, 
-    const QString &beginPath, const QString &targetName) -> Result<quint32>
+    const QString &beginPath, const QString &targetName) -> Result<qint32>
 {
-
+    return {-1, ErrBox(ErrCode::Busy, "Job queue is full.")};
 }
 
 auto JstpClient::initBroadcast() -> ErrBox{
@@ -47,7 +66,7 @@ auto JstpClient::initBroadcast() -> ErrBox{
     );
     
     if(!ok){
-        return ErrBox(ErrCode::UDPBind, "Failed to init broadcast: " + broadcast.errorString());
+        return ErrBox(ErrCode::UDPBind, "Failed to init broadcast: " + broadsock_.errorString());
     }
     
     return OkBox();
@@ -59,10 +78,16 @@ auto JstpClient::initHostsock() -> ErrBox{
     if(!ok){
         return ErrBox(ErrCode::UDPBind, "Failed to init udp: " + hostsock_.errorString());
     }
+    
+    return OkBox();
 }
 
 auto JstpClient::initQConnections() -> void{
     connect(&hostsock_, SIGNAL(readyRead()), this, SLOT(at_hostComing()));
+}
+
+auto JstpClient::nextJobId() -> qint32{
+    return jobid_++;
 }
 
 void JstpClient::at_hostComing(){

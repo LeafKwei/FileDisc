@@ -23,7 +23,7 @@ public:
     explicit JstpServer();
     auto initServer() -> ErrBox; //初始化Server
     auto listen() -> ErrBox; //异步监听来自客户端的请求(TCP)和广播(UDP)
-    auto setSharedDirectory(const QString &path) -> void; //设置共享目录所在路径，如果该目录不存在，则维持旧路径
+    auto setSharedDirectory(const QString &path) -> void; //设置共享目录所在路径，如果该目录不存在，则默认使用程序安装目录
     auto addHook(RequestHook hook) -> void; //添加请求钩子，可自由修改请求内容，同时也可过滤请求(通过返回false)
 
 private:

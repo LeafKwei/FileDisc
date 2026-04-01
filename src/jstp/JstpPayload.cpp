@@ -2,6 +2,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QDataStream>
 #include "jstp/JstpPayload.hpp"
 FILEDISC_BEGIN
 
@@ -81,6 +82,23 @@ auto JstpPayload::unsetFlag(qint32 flag) -> void{
 
 auto JstpPayload::toString() -> QString{
     return QString(toByteArray());
+}
+
+/**
+ * 将JSTP协议头、JSON长度、JSON内容拼接到一个字节数组中，最终报文形如：
+ * [4字节的JSTP头][4字节的JSON长度][N字节的JSON内容]
+ */
+auto JstpPayload::toSendable() -> QByteArray{
+    QByteArray buf;
+    QByteArray json = toByteArray();
+    QDataStream ds(&buf, QIODevice::WriteOnly);
+    
+    ds.setByteOrder(QDataStream::LittleEndian); //设置字节序，避免跨平台时因字节序不同导致报文错位
+    ds << QString(HEAD).toUtf8();
+    ds << static_cast<qint32>(json.size());
+    ds << json;
+    
+    return buf;
 }
 
 auto JstpPayload::toByteArray() -> QByteArray{

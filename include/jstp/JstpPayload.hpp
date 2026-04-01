@@ -31,9 +31,10 @@ public:
     auto setFlag(qint32 flag) -> void; //设置flag
     auto unsetFlag(qint32 flag) -> void; //取消flag
     auto toString() -> QString;  //转换为JSON字符串
-    auto toByteArray() -> QByteArray; //转换为字节数组
+    auto toSendable() -> QByteArray; //转换JSTP报文格式的字节数组
     
 private:
+    auto toByteArray() -> QByteArray; //转换为纯JSON的字节数组
     auto takeHost(QJsonObject &obj) -> void; //注意，take*函数在取出元素的同时会将该元素置空
     auto takeFiles(QJsonObject &obj) -> void;
     auto takeDirs(QJsonObject &obj) -> void;

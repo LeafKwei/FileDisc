@@ -12,15 +12,19 @@ using ErrStr = QString;
 /* 将程序中的错误枚举为错误码 */
 enum class ErrCode{
     OK = 0,
+    Busy,
+    JobInit,
     TCPListen,
     UDPBind,
-    BadJson
+    BadJson,
+    BroCasSend,
 };
 
 /* 错误信息的封装类(在mixed.cpp中实现) */
 class ErrBox{
 public:
-    explicit ErrBox(ErrCode code=ErrCode::OK, ErrStr msg="");
+    explicit ErrBox(ErrCode code=ErrCode::OK);
+    explicit ErrBox(ErrCode code, const ErrStr &msg);
     auto errcode() const noexcept -> ErrCode;
     auto errmsg() const noexcept -> ErrStr;
     auto hasError() const noexcept -> bool;
