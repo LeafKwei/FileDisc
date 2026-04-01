@@ -8,33 +8,14 @@ JstpClient::JstpClient()
 
 }
 
-auto JstpClient::listen() -> ErrBox{
-    /* 初始化信号连接 */
-    initQConnections();
-    
-    /* 开启主机信息socket的监听 */
+auto JstpClient::initClient() -> ErrBox{
+    initQConnections(); //初始化信号连接
     auto err = initHostsock();
     if(err){
         return err;
     }
     
-    return OkBox();
-}
-
-auto JstpClient::broadcastToLAN() -> ErrBox{
-    QUdpSocket broadcast;
-    
-    /* 初始化广播 */
-    auto err = initBroadcast(broadcast);
-    if(err){
-        return err;
-    }
-    
-    /* 构建请求 */
-    makeHostRequest();
-    
-    /* 发送广播 */
-    err = sendHostRequest(0);
+    err = initBroadcast();
     if(err){
         return err;
     }
@@ -42,45 +23,50 @@ auto JstpClient::broadcastToLAN() -> ErrBox{
     return OkBox();
 }
 
-auto JstpClient::request(ArgHolder) -> Result<quint32>{
-    return Result<quint32>{0, ErrBox()};
+auto JstpClient::requestHost() -> Result<quint32>{
+    
 }
 
-auto JstpClient::setPort(qint16 port) -> void{
-    port_ = port;
+auto JstpClient::requestFile(const JstpHostField &host, 
+    const QString &beginPath, const QString &targetName) -> Result<quint32>
+{
+    
 }
 
-auto JstpClient::sendHostRequest(ArgHolder) -> ErrBox{
-    return OkBox();
+auto JstpClient::requestDir(const JstpHostField &host, 
+    const QString &beginPath, const QString &targetName) -> Result<quint32>
+{
+
 }
 
-auto JstpClient::makeHostRequest() -> ArgHolder{
-    return {};
-}
-
-auto JstpClient::initBroadcast(QUdpSocket &broadcast) -> ErrBox{
-    auto ok = broadcast.bind(
+auto JstpClient::initBroadcast() -> ErrBox{
+    /* 初始化UDP广播套接字，后续会使用此套接字在局域网内向所有Server广播请求 */
+    auto ok = broadsock_.bind(
         0,
         QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint
     );
     
     if(!ok){
-        return ErrBox(ErrCode::UDPBind, "Failed to bind: " + broadcast.errorString());
+        return ErrBox(ErrCode::UDPBind, "Failed to init broadcast: " + broadcast.errorString());
     }
     
     return OkBox();
 }
 
 auto JstpClient::initHostsock() -> ErrBox{
-    return OkBox();
+    /* 初始化用于监听Server响应的UDP套接字 */
+    auto ok = hostsock_.bind(QHostAddress::Any, port_);
+    if(!ok){
+        return ErrBox(ErrCode::UDPBind, "Failed to init udp: " + hostsock_.errorString());
+    }
 }
 
 auto JstpClient::initQConnections() -> void{
-    
+    connect(&hostsock_, SIGNAL(readyRead()), this, SLOT(at_hostComing()));
 }
 
 void JstpClient::at_hostComing(){
-
+    qDebug() << "Get UDP response.";
 }
 
 

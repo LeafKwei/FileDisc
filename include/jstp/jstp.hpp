@@ -4,6 +4,9 @@
 #include <QString>
 #include "def/types.hpp"
 FILEDISC_BEGIN
+/*///////// 请求头 //////////*/
+constexpr qint32 HEAD_SIZE = ((sizeof("JSTP") - 1) + sizeof(qint32));
+
 /*///////// 定义请求类型 /////////*/
 enum class ReqType{
     Test = 0,     //仅测试数据通路，服务端会忽略此请求
@@ -29,6 +32,7 @@ constexpr const char *JSTP_BEGIN = "begin_path";
 constexpr const char *JSTP_TARGET = "target";
 constexpr const char *JSTP_TARGETSIZE = "target_size";
 constexpr const char *JSTP_HOST = "host";
+constexpr const char *JSTP_HOST_NAME = "name";
 constexpr const char *JSTP_HOST_IP = "ip";
 constexpr const char *JSTP_HOST_PORT = "port";
 constexpr const char *JSTP_FILES = "files";
@@ -39,7 +43,8 @@ constexpr const char *JSTP_DIRS_NAME = "name";
 
 /*///////// 定义简单结构 /////////*/
 struct JstpHostField{
-    quint32 ip;    //用户需要确保ip和port为网络字节序
+    QString name;
+    quint32 ip;
     quint16 port;
 };
 

@@ -10,10 +10,17 @@ JstpServer::JstpServer()
     
 }
 
-auto JstpServer::listen() -> ErrBox{
-    /* 初始化信号连接 */
-    initQConnections();
+auto JstpServer::initServer() -> ErrBox{
+    initQConnections(); //初始化信号连接
+    auto err = initBroadcast();
+    if(err){
+        return err;
+    }
     
+    return OkBox();
+}
+
+auto JstpServer::listen() -> ErrBox{ 
     /* 开启对TCP请求的监听 */
     if(!tcpserver_.listen(QHostAddress::Any, port_)){
         return ErrBox(ErrCode::TCPListen, "Failed to listen: "+ tcpserver_.errorString());
@@ -26,10 +33,6 @@ auto JstpServer::listen() -> ErrBox{
     }
     
     return OkBox();
-}
-
-auto JstpServer::setPort(quint16 port) -> void{
-    port_ = port;
 }
 
 auto JstpServer::setSharedDirectory(const QString &path) -> void{
@@ -51,7 +54,7 @@ auto JstpServer::initBroadcast() -> ErrBox{
     );
     
     if(!ok){
-        return ErrBox(ErrCode::UDPBind, "Failed to bind: " + broadcast_.errorString());
+        return ErrBox(ErrCode::UDPBind, "Failed to init broadcast: " + broadcast_.errorString());
     }
     
     return OkBox();

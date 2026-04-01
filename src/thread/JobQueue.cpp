@@ -2,7 +2,8 @@
 #include "thread/JobQueue.hpp"
 FILEDISC_BEGIN
 
-JobQueue::JobQueue(qint32 max) : max_(max)
+JobQueue::JobQueue(qint32 max) 
+    : max_(max)
 {
     
 }
@@ -29,7 +30,7 @@ auto JobQueue::obtain() -> Job*{
     }
     
     /* 获取任务并返回 */
-    Job *job = jobs_.first();  //注意，此处不能使用auto，first返回的是引用，如果使用auto，则job就是一个引用，不会增加引用计数，那么当erase元素后，智能指针指向的job就直接释放了
+    Job *job = jobs_.first();
     jobs_.erase(jobs_.cbegin()); //将任务从队列移除
     return job;
 }

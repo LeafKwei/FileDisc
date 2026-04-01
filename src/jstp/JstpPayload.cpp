@@ -5,10 +5,6 @@
 #include "jstp/JstpPayload.hpp"
 FILEDISC_BEGIN
 
-/**
- * 注意，为了避免调用QJsonValue.toString函数时，由非字符串类型的值导致返回空字符串的问题，所有非QString类型的值
- * 都需要先转换为QString再保存到QJson*相关的对象中
- */
 JstpPayload::JstpPayload()
     : flag_{}
     , host_{}
@@ -105,20 +101,23 @@ auto JstpPayload::takeHost(QJsonObject &obj) -> void{
     host_.port = 0;
     unsetFlag(FLAG_HOST);
     
-    /* 如果不存在host字段，直接返回 */
+    /* 如果不存在host实体，直接返回 */
     auto val = obj.value(JSTP_HOST);
     obj.take(JSTP_HOST);
     if(val == QJsonValue::Undefined){
         return;
     }
     
+    /* 获取对应名称的JSON实体 */
     auto jhost = val.toObject();
+    auto jhost_name = jhost.value(JSTP_HOST_NAME);
     auto jhost_ip = jhost.value(JSTP_HOST_IP);
     auto jhost_port = jhost.value(JSTP_HOST_PORT);
     
-    /* 取出ip字符串和端口并转换为数字形式 */
+    /* 取出主机名称、ip字符串和端口 */
+    host_.name = jhost_name.toString();
     host_.ip = static_cast<quint32>(QHostAddress(jhost_ip.toString()).toIPv4Address());
-    host_.port = static_cast<quint16>(jhost_port.toString().toUInt());
+    host_.port = static_cast<quint16>(jhost_port.toInt());
     setFlag(FLAG_HOST);
 }
 
@@ -126,7 +125,7 @@ auto JstpPayload::takeFiles(QJsonObject &obj) -> void{
     files_.clear();
     unsetFlag(FLAG_FILES);
     
-    /* 不存在files字段则直接返回 */
+    /* 不存在files实体则直接返回 */
     auto val = obj.take(JSTP_FILES);
     if(val == QJsonValue::Undefined){
         return;
@@ -138,7 +137,7 @@ auto JstpPayload::takeFiles(QJsonObject &obj) -> void{
         JstpFileField field;
         auto jobj = jfile.toObject();
         field.name = jobj.value(JSTP_FILES_NAME).toString();
-        field.size = static_cast<quint64>(jobj.value(JSTP_FILES_SIZE).toString().toULongLong());
+        field.size = static_cast<quint64>(jobj.value(JSTP_FILES_SIZE).toInteger());
         files_.push_back(field);
     }
     
@@ -149,7 +148,7 @@ auto JstpPayload::takeDirs(QJsonObject &obj) -> void{
     dirs_.clear();
     unsetFlag(FLAG_DIRS);
     
-    /* 不存在dirs字段则直接返回 */
+    /* 不存在dirs实体则直接返回 */
     auto val = obj.take(JSTP_DIRS);
     if(val == QJsonValue::Undefined){
         return;
@@ -186,8 +185,9 @@ auto JstpPayload::fillHost(QJsonObject &obj) -> void{
     if(!hasFlag(FLAG_HOST)) return;  //未设置host时，不进行填充
     
     QJsonObject host;
+    host.insert(JSTP_HOST_NAME, host_.name);
     host.insert(JSTP_HOST_IP, QHostAddress(host_.ip).toString());
-    host.insert(JSTP_HOST_PORT, QString::number(host_.port));
+    host.insert(JSTP_HOST_PORT, host_.port);
     obj.insert(JSTP_HOST, host);
 }
 
@@ -198,7 +198,7 @@ auto JstpPayload::fillFiles(QJsonObject &obj) -> void{
     for(const auto &file : files_){
         QJsonObject jobj;
         jobj.insert(JSTP_FILES_NAME, file.name);
-        jobj.insert(JSTP_FILES_SIZE, QString::number(file.size));
+        jobj.insert(JSTP_FILES_SIZE, file.size);
         jfiles.push_back(jobj);
     }
     

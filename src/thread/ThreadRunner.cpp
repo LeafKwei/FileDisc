@@ -5,7 +5,7 @@ FILEDISC_BEGIN
 
 ThreadRunner::ThreadRunner(JobQueue &jobQueue) : jobQueue_(jobQueue)
 {
-    qDebug() << "thread: " << reinterpret_cast<quint64>(this) << "created...";
+
 }
 
 void ThreadRunner::run(){
