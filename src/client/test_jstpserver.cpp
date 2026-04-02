@@ -9,13 +9,7 @@ int main(int argc, char *argv[]){
     QApplication app(argc, argv);
     
     //=======================================
-    JstpClient client;
-    if(client.requestHost().err){
-        qDebug() << "哦豁！";
-    }
-    else{
-        qDebug() << "YES.";
-    }
+    
     
     //=======================================
     

@@ -2,42 +2,42 @@
 #define THREADMANAGER_HPP
 
 #include <QObject>
-#include <QPair>
 #include <QVector>
-#include <QSharedPointer>
 #include "def/types.hpp"
-#include "thread/JobQueue.hpp"
-#include "thread/ManagerInf.hpp"
 class QThread;
-FILEDISC_BEGIN
 
-class ThreadRunner;
+FILEDISC_BEGIN
+class Job;
 
 /*///////// 创建和管理线程，用户可将任务发送给此对象以便由线程执行 /////////*/
 class ThreadManager : public QObject{
     Q_OBJECT
 public:
-    using RoInfo = const ManagerInf&;
-    using ThreadVector = QVector<QPair<QThread*, ThreadRunner*>>;
+    using JobQueue = QVector<Job*>;
+    using ThreadVector = QVector<QThread*>;
 
 public:
-    explicit ThreadManager(qint32 max);
-    auto sendToQueue(Job *job) -> bool; //发送任务到任务队列中，如果任务数量已达到上限，则返回false; Job会通过调用deleteLater自动删除，需要确保创建该Job的线程运行了事件循环
-    auto info() const noexcept -> RoInfo; //返回ManagerInfo的只读引用
+    explicit ThreadManager(qint32 maxthrs, qint32 maxjobs);
+    ~ThreadManager() noexcept;
+    auto sendToQueue(Job *job) -> bool; //发送任务到任务队列中，如果任务数量已达到上限，则返回false; Job会通过调用deleteLater自动删除
 
 private:
-    auto createThread() -> void;
-    auto updateManager(QThread *thread, ThreadRunner *runner) -> void;
+    auto execJob(Job *job) -> bool;
+    auto appendExecJob(Job *job) -> bool;
+    auto appendPendJob(Job *job) -> bool;
+    auto createThread() -> QThread*;
+    auto findFreeThread() -> QThread*;    
+    auto connectEntity(QThread *thread, Job *job) -> void;
 
 private:
-    qint32 max_;
-    ManagerInf inf_;
-    JobQueue jobQueue_;
+    qint32 maxthrs_;
+    qint32 maxjobs_;
+    JobQueue execjobs_;  //正在执行的任务
+    JobQueue pendjobs_;  //准备执行的任务
     ThreadVector threads_;
     
 public slots:
-    void at_jobstart();
-    void at_jobdone();
+    void at_jobFinished(void *addr);
 };
 
 FILEDISC_END
