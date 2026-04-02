@@ -17,7 +17,7 @@ class ThreadRunner;
 class ThreadManager : public QObject{
     Q_OBJECT
 public:
-    using RoInfo = ManagerInf;
+    using RoInfo = const ManagerInf&;
     using ThreadVector = QVector<QPair<QThread*, ThreadRunner*>>;
 
 public:

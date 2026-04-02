@@ -2,6 +2,7 @@
 #define THREADRUNNER_HPP
 
 #include <QObject>
+#include <QThread>
 #include "def/types.hpp"
 FILEDISC_BEGIN
 class JobQueue;
