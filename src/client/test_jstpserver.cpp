@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <QFile>
 #include "jstp/JstpClient.hpp"
+#include "utility/Defer.hpp"
 using namespace fidi;
 
 int main(int argc, char *argv[]){
@@ -10,7 +11,7 @@ int main(int argc, char *argv[]){
     
     //=======================================
     
-    
+
     //=======================================
     
     return app.exec();

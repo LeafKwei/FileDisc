@@ -17,11 +17,10 @@ ThreadManager::~ThreadManager() noexcept{
         delete job;
     }
     
-    /* 停止所有线程，随后删除 */
+    /* 当线程结束时，删除线程 */
     for(auto *thread : threads_){
-        thread -> quit();
-        thread -> wait();
-        delete thread;
+        connect(thread, &QThread::finished, 
+            thread, &QThread::deleteLater, Qt::DirectConnection); 
     }
 }
 
@@ -30,25 +29,19 @@ auto ThreadManager::sendToQueue(Job *job) -> bool{
 }
 
 auto ThreadManager::execJob(Job *job) -> bool{
-    /* 寻找是否存在空闲线程，如果没有则创建 */
-    QThread *thread = findFreeThread();
+    /* 创建线程 */
+    QThread *thread = createThread();
     
-    /* 无空闲线程时，将Job缓存到待决队列 */
+    /* 无可用线程时，将Job缓存到待决队列 */
     if(thread == nullptr){
         return appendPendJob(job);
     }
     
-    /* 连接信号和槽，随后启动线程并将Job添加到执行队列 */
+    /* 连接信号和槽，随后启动线程执行Job */
     connectEntity(thread, job);
     job -> moveToThread(thread);
     job -> moveMemberTo(thread);
     thread -> start();
-    appendExecJob(job);
-    return true;
-}
-
-auto ThreadManager::appendExecJob(Job *job) -> bool{
-    execjobs_.push_back(job);
     return true;
 }
 
@@ -75,29 +68,38 @@ auto ThreadManager::createThread() -> QThread*{
     return thread;
 }
 
-/* 尝试寻找已经finished的线程执行Job，如果没有，则调用createThread创建线程 */
-auto ThreadManager::findFreeThread() -> QThread*{
-    for(int idx = 0; idx < threads_.size(); idx++){
-        QThread *thread = threads_.at(idx);
-        if(thread -> isFinished()){
-            (thread -> wait(100)) ? thread : nullptr; //等待线程完全结束(至多100ms))
+auto ThreadManager::connectEntity(QThread *thread, Job *job) -> void{    
+    connect(thread, &QThread::started), 
+        job, &Job::run, Qt::DirectConnection); //线程启动时，执行run
+    connect(thread, &QThread::finished), 
+        job, &Job::deleteLater, Qt::DirectConnection); //线程结束时，销毁Job
+    connect(thread, &QThread::finished), 
+        thread, &QThread::deleteLater, Qt::DirectConnection); //线程结束时，销毁线程自身
+    connect(job, &Job::to_threadQuit, 
+        thread, &QThread::quit, Qt::DirectConnection); //Job完成时，退出线程
+    connect(job, &Job::to_jobFinished, 
+        this, &ThreadManager::at_jobFinished, Qt::QueuedConnection); //Job完成时，将Job的指针从exec队列中移除
+}
+
+auto ThreadManager::removeFinishedThread() -> void{
+    auto cbegin = threads_.cbegin();
+    auto cend = threads_.cend();
+    
+    while(cbegin != cend){
+        if(cbegin -> isFinished()){
+            qDebug() << "size before remove thread pointer: " << threads_.size();
+            cbegin = threads_.erase(cbegin);
+            qDebug() << "size after remove thread pointer: " << threads_.size();
         }
     }
+}
+
+void ThreadManager::at_jobFinished(qint32 jobid){
+    /* 发送任务已完成的信号 */
+    emit at_jobFinished(jobid);
     
-    return createThread();
-}
-
-auto ThreadManager::connectEntity(QThread *thread, Job *job) -> void{
-    thread -> disconnect();
-    connect(thread, SIGNAL(started()), job, SLOT(run())); //线程启动时，执行run
-    connect(thread, SIGNAL(finished()), job, SLOT(deleteLater())); //线程结束时，销毁Job
-    connect(job, SIGNAL(to_threadQuit()), thread, SLOT(quit())); //Job完成时，退出线程
-    connect(job, SIGNAL(to_jobFinished(void*)), this, SLOT(at_jobFinished(void*))); //Job完成时，将Job的指针从exec队列中移除
-}
-
-void ThreadManager::at_jobFinished(void *addr){
-    /* 移除exec队列中已完成的Job */
-    execjobs_.remove((QThread*)addr);
+    /* 移除已经finished的线程 */
+    removeFinishedThread();
     
     /* 从待决队列中取出新的Job执行 */
     if(pendjobs_.isEmpty()){

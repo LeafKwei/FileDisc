@@ -2,7 +2,7 @@
 #define TYPES_HPP
 
 #include <QtGlobal>
-#include <QSharedPointer>
+#include <QDebug>
 #include "def/err.hpp"
 FILEDISC_BEGIN
 /*///////// 定义通用类型 /////////*/

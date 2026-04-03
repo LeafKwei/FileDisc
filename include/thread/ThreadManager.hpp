@@ -23,21 +23,22 @@ public:
 
 private:
     auto execJob(Job *job) -> bool;
-    auto appendExecJob(Job *job) -> bool;
     auto appendPendJob(Job *job) -> bool;
-    auto createThread() -> QThread*;
-    auto findFreeThread() -> QThread*;    
+    auto createThread() -> QThread*;  
     auto connectEntity(QThread *thread, Job *job) -> void;
+    auto removeFinishedThread() -> void;
 
 private:
     qint32 maxthrs_;
     qint32 maxjobs_;
-    JobQueue execjobs_;  //正在执行的任务
     JobQueue pendjobs_;  //准备执行的任务
     ThreadVector threads_;
     
+signals:
+    void to_jobFinished(qint32 jobid);
+    
 public slots:
-    void at_jobFinished(void *addr);
+    void at_jobFinished(qint32 jobid);
 };
 
 FILEDISC_END

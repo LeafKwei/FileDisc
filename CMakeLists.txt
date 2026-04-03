@@ -56,6 +56,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		include/jstp/jobs/RequestFileJob.hpp
 		include/jstp/jobs/RequestDirJob.hpp
 		src/jstp/jobs/RequesHostJob.cpp
+		include/utility/Defer.hpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FileDisc APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

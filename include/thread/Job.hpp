@@ -20,7 +20,8 @@ signals:
     void to_jobFinished(void *addr); //当任务完成时，发出此信号以便ThreadManager可以取出其他任务执行，addr是Job的地址，提供给ThreadManager以便从List中移除Job
 
 public slots:
-    virtual auto run() -> void =0; //执行任务
+    virtual auto run() -> void =0;   //执行任务
+    virtual auto clean() -> void =0; //清理资源
 };
 
 FILEDISC_END
