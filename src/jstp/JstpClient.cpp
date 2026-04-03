@@ -1,10 +1,9 @@
 #include "def/config.hpp"
 #include "jstp/JstpClient.hpp"
-#include "jstp/jobs/RequesHostJob.hpp"
 FILEDISC_BEGIN
 
 JstpClient::JstpClient()
-    : threads_(MAX_THRAED, MAX_JOB)
+    : threads_(MAX_THRAED)
     , port_(CLIENT_PORT)
     , jobid_(0)
 {

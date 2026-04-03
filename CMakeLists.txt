@@ -30,15 +30,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		include/def/version.hpp
 		include/def/config.hpp
 		include/def/err.hpp
-		
-		include/thread/Job.hpp
-		include/thread/ThreadManager.hpp
-		
-		
-		
-		src/thread/ThreadManager.cpp
-		
-		
 		src/client/test_jstpclient.cpp
 		include/jstp/RequestHook.hpp
 		include/jstp/JstpPayload.hpp
@@ -52,11 +43,16 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		src/jstp/JstpPayload.cpp
 		include/jstp/jobs/JstpJob.hpp
 		src/jstp/jobs/JstpJob.cpp
-		include/jstp/jobs/RequesHostJob.hpp
-		include/jstp/jobs/RequestFileJob.hpp
-		include/jstp/jobs/RequestDirJob.hpp
-		src/jstp/jobs/RequesHostJob.cpp
 		include/utility/Defer.hpp
+		include/thread/Job.hpp 
+		include/thread/JobQueue.hpp 
+		include/thread/ManagerInf.hpp 
+		include/thread/ThreadManager.hpp 
+		include/thread/ThreadRunner.hpp
+		src/thread/JobQueue.cpp 
+		src/thread/ManagerInf.cpp 
+		src/thread/ThreadManager.cpp 
+		src/thread/ThreadRunner.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FileDisc APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

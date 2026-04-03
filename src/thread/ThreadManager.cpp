@@ -1,114 +1,75 @@
 #include <QThread>
 #include "def/config.hpp"
-#include "thread/Job.hpp"
+#include "thread/ThreadRunner.hpp"
 #include "thread/ThreadManager.hpp"
 FILEDISC_BEGIN
 
-ThreadManager::ThreadManager(qint32 maxthrs, qint32 maxjobs)
-    : maxthrs_(maxthrs)
-    , maxjobs_(maxjobs)
+ThreadManager::ThreadManager(qint32 max) 
+    : max_(max)
+    , inf_{}
+    , jobQueue_(MAX_JOB)
 {
 
 }
 
-ThreadManager::~ThreadManager() noexcept{
-    /* 删除所有未执行的任务 */
-    for(auto *job : pendjobs_){
-        delete job;
-    }
-    
-    /* 当线程结束时，删除线程 */
-    for(auto *thread : threads_){
-        connect(thread, &QThread::finished, 
-            thread, &QThread::deleteLater, Qt::DirectConnection); 
-    }
-}
-
 auto ThreadManager::sendToQueue(Job *job) -> bool{
-    return execJob(job);
-}
-
-auto ThreadManager::execJob(Job *job) -> bool{
-    /* 创建线程 */
-    QThread *thread = createThread();
-    
-    /* 无可用线程时，将Job缓存到待决队列 */
-    if(thread == nullptr){
-        return appendPendJob(job);
+    if(inf_.countFreeThreads() == 0){  //如果没有空闲线程，则创建新线程
+        createThread();
     }
     
-    /* 连接信号和槽，随后启动线程执行Job */
-    connectEntity(thread, job);
-    job -> moveToThread(thread);
-    job -> moveMemberTo(thread);
-    thread -> start();
-    return true;
+    auto result = jobQueue_.append(job);
+    return result;
 }
 
-auto ThreadManager::appendPendJob(Job *job) -> bool{
-    if(pendjobs_.size() >= maxjobs_){ //待决Job数量达到上限时，停止增加Job
-        return false;
-    }
-    
-    pendjobs_.push_back(job);
-    return true;
+auto ThreadManager::info() const noexcept -> RoInfo{
+    return inf_;
 }
 
-auto ThreadManager::createThread() -> QThread*{
-    if(threads_.size() >= maxthrs_){  //线程数量达到上限时，停止创建线程
-        return nullptr;
-    }
-    
-    QThread *thread = new (std::nothrow) QThread;
-    if(thread == nullptr){
-        return nullptr;
-    }
-    
-    threads_.push_back(thread);
-    return thread;
-}
-
-auto ThreadManager::connectEntity(QThread *thread, Job *job) -> void{    
-    connect(thread, &QThread::started), 
-        job, &Job::run, Qt::DirectConnection); //线程启动时，执行run
-    connect(thread, &QThread::finished), 
-        job, &Job::deleteLater, Qt::DirectConnection); //线程结束时，销毁Job
-    connect(thread, &QThread::finished), 
-        thread, &QThread::deleteLater, Qt::DirectConnection); //线程结束时，销毁线程自身
-    connect(job, &Job::to_threadQuit, 
-        thread, &QThread::quit, Qt::DirectConnection); //Job完成时，退出线程
-    connect(job, &Job::to_jobFinished, 
-        this, &ThreadManager::at_jobFinished, Qt::QueuedConnection); //Job完成时，将Job的指针从exec队列中移除
-}
-
-auto ThreadManager::removeFinishedThread() -> void{
-    auto cbegin = threads_.cbegin();
-    auto cend = threads_.cend();
-    
-    while(cbegin != cend){
-        if(cbegin -> isFinished()){
-            qDebug() << "size before remove thread pointer: " << threads_.size();
-            cbegin = threads_.erase(cbegin);
-            qDebug() << "size after remove thread pointer: " << threads_.size();
-        }
-    }
-}
-
-void ThreadManager::at_jobFinished(qint32 jobid){
-    /* 发送任务已完成的信号 */
-    emit at_jobFinished(jobid);
-    
-    /* 移除已经finished的线程 */
-    removeFinishedThread();
-    
-    /* 从待决队列中取出新的Job执行 */
-    if(pendjobs_.isEmpty()){
+auto ThreadManager::createThread() -> void{
+    if(threads_.size() >= max_){  //线程数量达到上限时，不再创建线程
         return;
     }
     
-    Job *job = pendjobs_.front();
-    pendjobs_.pop_front();
-    execJob(job);
+    QThread *thread = new QThread;
+    ThreadRunner *runner = new ThreadRunner(jobQueue_);
+    if(thread == nullptr || runner == nullptr){ //内存分配失败时，直接返回
+        delete thread;
+        delete runner;
+        return;
+    }
+    
+    /* 将线程与runner对象建立连接 */
+    runner -> moveToThread(thread);
+    connect(thread, SIGNAL(started()), runner, SLOT(run()));
+    
+    /* 启用延时删除，避免内存泄漏和提前释放问题 */
+    connect(thread, SIGNAL(finished()), runner, SLOT(deleteLater()));
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    
+    /* 更新Manager信息 */
+    updateManager(thread, runner);
+    
+    /* 启动线程 */
+    thread -> start();
 }
+
+auto ThreadManager::updateManager(QThread *thread, ThreadRunner *runner) -> void{
+    connect(runner, SIGNAL(to_jobstart()), this, SLOT(at_jobstart()));
+    connect(runner, SIGNAL(to_jobdone()), this, SLOT(at_jobdone()));
+    
+    inf_.setFreeThreadsCount(inf_.countFreeThreads() + 1);
+    threads_.push_back({thread, runner});
+}
+
+void ThreadManager::at_jobStart(qint32 jobid){
+    inf_.setFreeThreadsCount(inf_.countFreeThreads() - 1);
+}
+
+void ThreadManager::at_jobDone(qint32 jobid, ErrCode err){
+    emit to_jobFinished(jobid, err);
+    inf_.setFreeThreadsCount(inf_.countFreeThreads() + 1);
+}
+
+
 
 FILEDISC_END
