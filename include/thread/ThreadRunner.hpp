@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "def/types.hpp"
+#include "thread/RunnerInf.hpp"
 FILEDISC_BEGIN
 class JobQueue;
 
@@ -13,6 +14,7 @@ public:
     explicit ThreadRunner(JobQueue &jobQueue);
     
 private:
+    RunnerInf inf_;
     JobQueue &jobQueue_;
 
 signals:
