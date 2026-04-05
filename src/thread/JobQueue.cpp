@@ -11,7 +11,6 @@ JobQueue::JobQueue(qsizetype max)
 JobQueue::~JobQueue() noexcept{
     /* 当JobQueue析构时，其中的所有Job都应该被执行完毕 */
     assert(jobs_.size() == 0 && "JobQueue is not empty!");  //(注：字符串地址必定不为0，因此&&右侧的条件必定为真)
-    qDebug() << "Job Queue free...";
 }
 
 auto JobQueue::append(Job *job) -> bool{

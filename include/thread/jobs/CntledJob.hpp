@@ -4,6 +4,7 @@
 #include "thread/Job.hpp"
 FILEDISC_BEGIN
 
+/*///////// 控制型任务，不负责实际的作业，专门实现cntl函数以控制ThreadRunner的属性信息 /////////*/
 class CntledJob : public Job{
 public:
     CntledJob();

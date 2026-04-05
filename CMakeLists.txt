@@ -60,6 +60,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		include/thread/jobs/CntledJob.hpp
 		src/thread/jobs/CntledJob.cpp
 		src/thread/RunnerInf.cpp
+		include/jstp/JstpEmiter.hpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FileDisc APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
