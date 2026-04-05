@@ -3,7 +3,7 @@
 FILEDISC_BEGIN
 
 JstpClient::JstpClient()
-    : threads_(MAX_THRAED)
+    : threads_(MAX_THRAED, MAX_JOB)
     , port_(CLIENT_PORT)
     , jobid_(0)
 {

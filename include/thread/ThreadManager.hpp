@@ -19,9 +19,11 @@ class ThreadManager : public QObject{
 public:
     using RoInfo = ManagerInf;
     using ThreadVector = QVector<QPair<QThread*, ThreadRunner*>>;
+    using JobQueuePtr = QSharedPointer<JobQueue>;
 
 public:
-    explicit ThreadManager(qint32 max);
+    explicit ThreadManager(qsizetype maxthrds, qsizetype maxjobs);
+    ~ThreadManager() noexcept;
     auto sendToQueue(Job *job) -> bool; //发送任务到任务队列中，如果任务数量已达到上限，则返回false; Job会通过调用deleteLater自动删除，需要确保创建该Job的线程运行了事件循环
     auto info() const noexcept -> RoInfo; //返回ManagerInfo的只读引用
 
@@ -30,10 +32,11 @@ private:
     auto updateManager(QThread *thread, ThreadRunner *runner) -> void;
 
 private:
-    qint32 max_;
+    qsizetype maxthrds_;
+    qsizetype maxjobs_;
     ManagerInf inf_;
-    JobQueue jobQueue_;
     ThreadVector threads_;
+    JobQueuePtr jobqptr_;
     
 signals:
     void to_jobFinished(qint32 jobid, ErrCode err);

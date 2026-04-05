@@ -2,6 +2,7 @@
 #define THREADRUNNER_HPP
 
 #include <QObject>
+#include <QSharedPointer>
 #include "def/types.hpp"
 #include "thread/RunnerInf.hpp"
 FILEDISC_BEGIN
@@ -9,13 +10,16 @@ class JobQueue;
 
 /*///////// QThread线程会直接执行此对象的run函数而非任务，然后通过该函数依次执行任务队列中的任务 /////////*/
 class ThreadRunner : public QObject{
-    Q_OBJECT
+    Q_OBJECT    
 public:
-    explicit ThreadRunner(JobQueue &jobQueue);
+    using JobQueuePtr = QSharedPointer<JobQueue>;
+    
+public:
+    explicit ThreadRunner(JobQueuePtr jobqptr);
     
 private:
     RunnerInf inf_;
-    JobQueue &jobQueue_;
+    JobQueuePtr jobqptr_;
 
 signals:
     void to_jobStart(qint32 jobid); //线程获取到任务并开始执行时

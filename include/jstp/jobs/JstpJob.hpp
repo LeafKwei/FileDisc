@@ -7,7 +7,6 @@
 FILEDISC_BEGIN
 
 class JstpJob : public Job{
-    Q_OBJECT
 public:
     explicit JstpJob(qint32 id);
     auto noPayload() -> bool;  //检查Job内部的payload是否分配成功

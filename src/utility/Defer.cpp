@@ -1,3 +1,4 @@
+#include <QtDebug>
 #include "utility/Defer.hpp"
 FILEDISC_BEGIN
 
@@ -14,7 +15,7 @@ Defer::~Defer() noexcept{
         }
     }
     catch(...){
-        qCritical() << "Critical error in Defer.~Defer(): You SHOULD NOT throw any exceptions.";
+        qCritical("Critical error in Defer.~Defer(): You SHOULD NOT throw any exceptions.");
     }
 }
 

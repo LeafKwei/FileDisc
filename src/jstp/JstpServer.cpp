@@ -4,7 +4,7 @@
 FILEDISC_BEGIN
 
 JstpServer::JstpServer()
-    : threads_(MAX_THRAED)
+    : threads_(MAX_THRAED, MAX_JOB)
     , port_(SERVER_PORT)
 {
     

@@ -8,8 +8,7 @@ class CntledJob : public Job{
 public:
     CntledJob();
     auto id() const noexcept -> qint32 override;
-    auto run() -> ErrCode override;
-    auto moveMemberTo(QThread *thread) override;
+    auto run() noexcept -> ErrCode override;
     
 private:
     auto cntl(RunnerInf &inf) -> void override;

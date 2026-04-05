@@ -2,7 +2,7 @@
 #include "thread/JobQueue.hpp"
 FILEDISC_BEGIN
 
-JobQueue::JobQueue(qint32 max) 
+JobQueue::JobQueue(qsizetype max) 
     : max_(max)
 {
     
@@ -11,6 +11,7 @@ JobQueue::JobQueue(qint32 max)
 JobQueue::~JobQueue() noexcept{
     /* 当JobQueue析构时，其中的所有Job都应该被执行完毕 */
     assert(jobs_.size() == 0 && "JobQueue is not empty!");  //(注：字符串地址必定不为0，因此&&右侧的条件必定为真)
+    qDebug() << "Job Queue free...";
 }
 
 auto JobQueue::append(Job *job) -> bool{
@@ -23,7 +24,6 @@ auto JobQueue::append(Job *job) -> bool{
     QMutexLocker locker(&mutex_);
     jobs_.push_back(job);
     cond_hasjob_.notify_one();
-
     return true;
 }
 
@@ -36,9 +36,26 @@ auto JobQueue::obtain() -> Job*{
     }
     
     /* 获取任务并返回 */
-    Job *job = jobs_.first();
-    jobs_.erase(jobs_.cbegin()); //将任务从队列移除
+    Job *job = jobs_.takeFirst();
     return job;
+}
+
+auto JobQueue::size() const noexcept -> qsizetype{
+    return jobs_.size();
+}
+
+auto JobQueue::max() const noexcept -> qsizetype{
+    return max_;
+}
+
+auto JobQueue::clean() -> void{
+    QMutexLocker locker(&mutex_);
+    
+    /* 删除每个Job，并从队列中移除 */
+    while(!jobs_.isEmpty()){
+        auto job = jobs_.takeFirst();
+        delete job;
+    }
 }
 
 FILEDISC_END

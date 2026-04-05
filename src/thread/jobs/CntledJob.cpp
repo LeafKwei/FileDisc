@@ -11,13 +11,9 @@ auto CntledJob::id() const noexcept -> qint32{
     return 0;
 }
 
-auto CntledJob::run() -> ErrCode{
+auto CntledJob::run() noexcept -> ErrCode{
     /* 空实现 */
     return ErrCode::OK;
-}
-
-auto CntledJob::moveMemberTo(QThread *thread){
-    /* 空实现 */
 }
 
 auto CntledJob::cntl(RunnerInf &inf) -> void{
