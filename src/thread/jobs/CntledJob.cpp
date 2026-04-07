@@ -13,7 +13,7 @@ auto CntledJob::id() const noexcept -> qint32{
 
 auto CntledJob::run() noexcept -> ErrCode{
     /* 空实现 */
-    return ErrCode::OK;
+    return ErrCode::Ok;
 }
 
 auto CntledJob::cntl(RunnerInf &inf) -> void{

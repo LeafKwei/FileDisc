@@ -3,35 +3,26 @@
 #include "jstp/JstpServer.hpp"
 FILEDISC_BEGIN
 
-JstpServer::JstpServer()
+JstpServer::JstpServer(const QString &name)
     : threads_(MAX_THRAED, MAX_JOB)
     , port_(SERVER_PORT)
+    , name_(name)
 {
     
 }
 
 auto JstpServer::initServer() -> ErrBox{
+    auto err = initTcpSocket();
+    if(err){
+        return err;
+    }
+    
+    err = initUdpSocket();
+    if(err){
+        return err;
+    }
+    
     initQConnections(); //初始化信号连接
-    auto err = initBroadcast();
-    if(err){
-        return err;
-    }
-    
-    return OkBox();
-}
-
-auto JstpServer::listen() -> ErrBox{ 
-    /* 开启对TCP请求的监听 */
-    if(!tcpserver_.listen(QHostAddress::Any, port_)){
-        return ErrBox(ErrCode::TcpListen, "Failed to listen: "+ tcpserver_.errorString());
-    }
-    
-    /* 开启对广播请求的监听 */
-    auto err = initBroadcast();
-    if(err){
-        return err;
-    }
-    
     return OkBox();
 }
 
@@ -47,10 +38,20 @@ auto JstpServer::addHook(RequestHook hook) -> void{
     hooks_.push_back(hook);
 }
 
-auto JstpServer::initBroadcast() -> ErrBox{
+auto JstpServer::initTcpSocket() -> ErrBox{
+    /* 开启对TCP请求的监听 */
+    if(!tcpserver_.listen(QHostAddress::Any, port_)){
+        return ErrBox(ErrCode::TcpListen, "Failed to listen: "+ tcpserver_.errorString());
+    }
+    
+    return OkBox();
+}
+
+auto JstpServer::initUdpSocket() -> ErrBox{
     auto ok = broadcast_.bind(
+        QHostAddress::Any,
         port_,
-        QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint
+        QUdpSocket::ShareAddress
     );
     
     if(!ok){
@@ -61,8 +62,8 @@ auto JstpServer::initBroadcast() -> ErrBox{
 }
 
 auto JstpServer::initQConnections() -> void{
-    connect(&tcpserver_, SIGNAL(newConnection()), this, SLOT(at_requestComing()));
-    connect(&broadcast_, SIGNAL(readyRead()), this, SLOT(at_broadcastComing()));
+    connect(&tcpserver_, &QTcpServer::newConnection, this, &JstpServer::at_requestComing);
+    connect(&broadcast_, &QUdpSocket::readyRead, this, &JstpServer::at_broadcastComing);
 }
 
 void JstpServer::at_requestComing(){

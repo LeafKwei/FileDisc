@@ -1,11 +1,11 @@
 #include <QUdpSocket>
+#include "def/config.hpp"
 #include "jstp/jstp.hpp"
 #include "jstp/jobs/ReqHostJob.hpp"
 FILEDISC_BEGIN
 
-ReqHostJob::ReqHostJob(qint32 id, JstpHostField local)
+ReqHostJob::ReqHostJob(qint32 id)
     : JstpJob(id)
-    , local_(local)
 {
 
 }
@@ -18,17 +18,13 @@ auto ReqHostJob::run() noexcept -> ErrCode{
     QUdpSocket udpsock;
     JstpPayload &req = payload();
     
-    /* 填充报文 */
-    req.setPair(JSTP_TYPE, QString::number(static_cast<qint32>(ReqType::HostInfo))); //请求Server的主机信息
-    req.setHostField(local_);  //Client的主机信息
-    
     /* 发送广播 */
-    qint64 nwrite = udpsock.writeDatagram(req.toSendable(), QHostAddress::Broadcast, local_.port);
+    qint64 nwrite = udpsock.writeDatagram(req.toSendable(), QHostAddress::Broadcast, SERVER_PORT);
     if(nwrite < 0){
         return ErrCode::UdpSend;
     }
     
-    return ErrCode::OK;
+    return ErrCode::Ok;
 }
 
 FILEDISC_END

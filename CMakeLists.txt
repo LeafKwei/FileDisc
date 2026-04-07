@@ -21,9 +21,9 @@ set(PROJECT_SOURCES
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 	qt_add_library(FileDisc STATIC
         ${PROJECT_SOURCES}
+		include/jstp/JstpServer.hpp
 		src/jstp/JstpServer.cpp
 		src/jstp/JstpClient.cpp
-		include/jstp/JstpServer.hpp
 		include/jstp/JstpClient.hpp
 		include/def/types.hpp
 		include/def/version.hpp
@@ -31,8 +31,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		include/def/err.hpp
 		include/jstp/RequestHook.hpp
 		include/jstp/JstpPayload.hpp
-		include/server/server_holder.hpp
-		src/server/server_holder.cpp
 		src/utility/ErrBox.cpp
 		include/utility/LocalLogger.hpp
 		include/auth/KeyGenerator.hpp
@@ -61,25 +59,27 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		src/jstp/jobs/ReqHostJob.cpp
 		include/utility/StaticKit.hpp
 		src/utility/StaticKit.cpp
+		include/jstp/jobs/ReqFileJob.hpp
+		src/jstp/jobs/ReqFileJob.cpp
     )
     
-    qt_add_executable(FileDiscClient
+    qt_add_executable(FDServerCLI
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-		src/client/test_jstpclient.cpp
+		src/server/ServerCLI.cpp
     )
     
-	qt_add_executable(FileDiscServer
+	qt_add_executable(FDClientCLI
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-		src/client/test_jstpserver.cpp
+		src/client/ClientCLI.cpp
     )
 endif()
 
 include_directories("./include")
 target_link_libraries(FileDisc PUBLIC Qt${QT_VERSION_MAJOR}::Widgets Qt6::Network)
-target_link_libraries(FileDiscClient PRIVATE libfidi)
-target_link_libraries(FileDiscServer PRIVATE libfidi)
+target_link_libraries(FDServerCLI PRIVATE FileDisc)
+target_link_libraries(FDClientCLI PRIVATE FileDisc)
 
 
 

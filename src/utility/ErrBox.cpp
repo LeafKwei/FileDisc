@@ -26,7 +26,7 @@ auto ErrBox::errmsg() const noexcept -> ErrStr{
 }
 
 auto ErrBox::hasError() const noexcept -> bool{
-    return code_ != ErrCode::OK;
+    return code_ != ErrCode::Ok;
 }
 
 ErrBox::operator bool() const noexcept{
