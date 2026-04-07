@@ -28,7 +28,9 @@ ThreadManager::~ThreadManager() noexcept{
     auto end = threads_.end();
     for(auto it = threads_.begin(); it != end; it++){
         it -> first -> quit();
-        jobqptr_ -> append(new CntledJob);
+        CntledJob *cjob = new (std::nothrow) CntledJob;
+        assert(cjob != nullptr && "Critical error in ~ThreadManager: Failed to alloc memories for CntledJob.");
+        jobqptr_ -> append(cjob);
     }
 }
 
@@ -37,7 +39,7 @@ auto ThreadManager::sendToQueue(Job *job) -> bool{
         createThread();
     }
     
-    auto result = jobqptr_ -> append(job);
+    bool result = jobqptr_ -> append(job);
     return result;
 }
 

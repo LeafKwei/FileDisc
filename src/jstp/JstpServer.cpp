@@ -23,7 +23,7 @@ auto JstpServer::initServer() -> ErrBox{
 auto JstpServer::listen() -> ErrBox{ 
     /* 开启对TCP请求的监听 */
     if(!tcpserver_.listen(QHostAddress::Any, port_)){
-        return ErrBox(ErrCode::TCPListen, "Failed to listen: "+ tcpserver_.errorString());
+        return ErrBox(ErrCode::TcpListen, "Failed to listen: "+ tcpserver_.errorString());
     }
     
     /* 开启对广播请求的监听 */
@@ -54,7 +54,7 @@ auto JstpServer::initBroadcast() -> ErrBox{
     );
     
     if(!ok){
-        return ErrBox(ErrCode::UDPBind, "Failed to init broadcast: " + broadcast_.errorString());
+        return ErrBox(ErrCode::UdpBind, "Failed to init broadcast: " + broadcast_.errorString());
     }
     
     return OkBox();

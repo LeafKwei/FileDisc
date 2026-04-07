@@ -58,5 +58,7 @@ struct JstpDirField{
     QString name;
 };
 
+/*///////// 注册器 /////////*/
+
 FILEDISC_END
 #endif

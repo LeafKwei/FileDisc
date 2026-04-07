@@ -52,7 +52,7 @@ auto JobQueue::clean() -> void{
     
     /* 删除每个Job，并从队列中移除 */
     while(!jobs_.isEmpty()){
-        auto job = jobs_.takeFirst();
+        Job *job = jobs_.takeFirst();
         delete job;
     }
 }

@@ -1,12 +1,9 @@
 协议帧格式：
-  JSTP  type   length   payload
-[32bit] [8bit] [32bit] [length * 8 bit]
+  JSTP length   json               data
+[32bit] [32bit] [length * 8 bit]  [n bit]
 
 JSTP: 帧头
-type: 帧类型
-length: 有效载荷长度
-payload: 有效载荷
+length: json长度
+json: json内容
+data: 数据内容，长度由json字段决定
 
-帧类型：
-	* JSON: JSON文本
-	* DATA：二进制数据

@@ -15,6 +15,10 @@ auto JstpJob::payload() -> JstpPayload&{
     return *payload_;
 }
 
+auto JstpJob::emiter() -> JstpEmiter&{
+    return emiter_;
+}
+
 auto JstpJob::id() const noexcept -> qint32{
     return id_;
 }

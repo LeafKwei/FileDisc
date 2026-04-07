@@ -9,7 +9,7 @@ FILEDISC_BEGIN
 using DeferFunc = std::function<void()>;
 class Defer{
 public:
-    Defer(DeferFunc df);
+    explicit Defer(DeferFunc df);
     ~Defer() noexcept;
     Defer(const Defer &other) =delete;   //避免因为拷贝导致的重复调用
     Defer& operator=(const Defer &other) =delete;

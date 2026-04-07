@@ -19,8 +19,7 @@ set(PROJECT_SOURCES
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(FileDisc
-        MANUAL_FINALIZATION
+	qt_add_library(FileDisc STATIC
         ${PROJECT_SOURCES}
 		src/jstp/JstpServer.cpp
 		src/jstp/JstpClient.cpp
@@ -30,13 +29,11 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		include/def/version.hpp
 		include/def/config.hpp
 		include/def/err.hpp
-		src/client/test_jstpclient.cpp
 		include/jstp/RequestHook.hpp
 		include/jstp/JstpPayload.hpp
 		include/server/server_holder.hpp
 		src/server/server_holder.cpp
 		src/utility/ErrBox.cpp
-		src/client/test_jstpserver.cpp
 		include/utility/LocalLogger.hpp
 		include/auth/KeyGenerator.hpp
 		include/jstp/jstp.hpp
@@ -55,58 +52,35 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		src/thread/ThreadRunner.cpp
 		include/thread/RunnerInf.hpp
 		src/utility/Defer.cpp
-		
 		src/thread/Job.cpp
 		include/thread/jobs/CntledJob.hpp
 		src/thread/jobs/CntledJob.cpp
 		src/thread/RunnerInf.cpp
 		include/jstp/JstpEmiter.hpp
+		include/jstp/jobs/ReqHostJob.hpp
+		src/jstp/jobs/ReqHostJob.cpp
+		include/utility/StaticKit.hpp
+		src/utility/StaticKit.cpp
     )
-# Define target properties for Android with Qt 6 as:
-#    set_property(TARGET FileDisc APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
-else()
-    if(ANDROID)
-        add_library(FileDisc SHARED
-            ${PROJECT_SOURCES}
-        )
-# Define properties for Android with Qt 5 after find_package() calls as:
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
-    else()
-        add_executable(FileDisc
-            ${PROJECT_SOURCES}
-        )
-    endif()
+    
+    qt_add_executable(FileDiscClient
+        MANUAL_FINALIZATION
+        ${PROJECT_SOURCES}
+		src/client/test_jstpclient.cpp
+    )
+    
+	qt_add_executable(FileDiscServer
+        MANUAL_FINALIZATION
+        ${PROJECT_SOURCES}
+		src/client/test_jstpserver.cpp
+    )
 endif()
 
 include_directories("./include")
-target_link_libraries(FileDisc PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt6::Network)
+target_link_libraries(FileDisc PUBLIC Qt${QT_VERSION_MAJOR}::Widgets Qt6::Network)
+target_link_libraries(FileDiscClient PRIVATE libfidi)
+target_link_libraries(FileDiscServer PRIVATE libfidi)
 
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
-if(${QT_VERSION} VERSION_LESS 6.1.0)
-  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.FileDisc)
-endif()
-set_target_properties(FileDisc PROPERTIES
-    ${BUNDLE_ID_OPTION}
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-    MACOSX_BUNDLE TRUE
-    WIN32_EXECUTABLE TRUE
-)
-
-include(GNUInstallDirs)
-install(TARGETS FileDisc
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
-
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(FileDisc)
-endif()
 
 
 
