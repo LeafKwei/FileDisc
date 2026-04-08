@@ -1,5 +1,7 @@
-#include <QDate>
+#include <QDataStream>
+#include <QNetworkDatagram>
 #include "def/config.hpp"
+#include "jstp/jstp.hpp"
 #include "jstp/JstpServer.hpp"
 FILEDISC_BEGIN
 
@@ -48,14 +50,14 @@ auto JstpServer::initTcpSocket() -> ErrBox{
 }
 
 auto JstpServer::initUdpSocket() -> ErrBox{
-    auto ok = broadcast_.bind(
+    auto ok = udpbroadcast_.bind(
         QHostAddress::Any,
         port_,
         QUdpSocket::ShareAddress
     );
     
     if(!ok){
-        return ErrBox(ErrCode::UdpBind, "Failed to init broadcast: " + broadcast_.errorString());
+        return ErrBox(ErrCode::UdpBind, "Failed to init broadcast: " + udpbroadcast_.errorString());
     }
     
     return OkBox();
@@ -63,7 +65,7 @@ auto JstpServer::initUdpSocket() -> ErrBox{
 
 auto JstpServer::initQConnections() -> void{
     connect(&tcpserver_, &QTcpServer::newConnection, this, &JstpServer::at_requestComing);
-    connect(&broadcast_, &QUdpSocket::readyRead, this, &JstpServer::at_broadcastComing);
+    connect(&udpbroadcast_, &QUdpSocket::readyRead, this, &JstpServer::at_broadcastComing);
 }
 
 void JstpServer::at_requestComing(){
@@ -71,7 +73,18 @@ void JstpServer::at_requestComing(){
 }
 
 void JstpServer::at_broadcastComing(){
-    qDebug() << "Get Broadcast Request...";
+    qDebug() << "Get UDP BroadCast...";
+    
+    auto netgram = udpbroadcast_.receiveDatagram();
+    auto bytedata = netgram.data();
+    qDebug() << "received " << bytedata.size() << " bytes";
+    
+    QDataStream ds(&bytedata, QIODevice::ReadOnly);
+    ds.setByteOrder(QDataStream::LittleEndian);
+    quint64 head_len;
+    ds >> head_len;
+    
+    qDebug() << "length = " << head_len;
 }
 
 

@@ -37,7 +37,7 @@ private:
     QVector<RequestHook> hooks_;
     ThreadManager threads_;
     QTcpServer tcpserver_;
-    QUdpSocket broadcast_;
+    QUdpSocket udpbroadcast_;
     
 signals:
     

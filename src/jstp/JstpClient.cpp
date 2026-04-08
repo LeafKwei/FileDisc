@@ -79,11 +79,20 @@ auto JstpClient::initLoalHost() -> ErrBox{
 }
 
 auto JstpClient::initUdpReceiver() -> ErrBox{
+    auto ok = udprecvr_.bind(
+        QHostAddress::Any,
+        port_
+    );
+    
+    if(!ok){
+        return ErrBox{ErrCode::UdpBind, udprecvr_.errorString()};
+    }
+    
     return OkBox();
 }
 
 auto JstpClient::initQConnections() -> void{
-   
+    connect(&udprecvr_, &QUdpSocket::readyRead, this, &JstpClient::at_hostComing);
 }
 
 auto JstpClient::nextJobId() -> qint32{

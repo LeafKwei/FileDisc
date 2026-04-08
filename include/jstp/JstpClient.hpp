@@ -1,6 +1,7 @@
 #ifndef JSTPCLIENT_HPP
 #define JSTPCLIENT_HPP
 
+#include <QDir>
 #include <QObject>
 #include <QUdpSocket>
 #include "def/err.hpp"
@@ -40,6 +41,7 @@ private:
 private:
     qint16 port_;
     qint32 jobid_;
+    QDir downloadDir_;
     QString name_;
     JstpHostField local_;
     QUdpSocket udprecvr_;

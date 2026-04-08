@@ -4,9 +4,8 @@
 #include <QString>
 #include "def/types.hpp"
 FILEDISC_BEGIN
-/*///////// 请求头 //////////*/
-constexpr const char *HEAD = "JSTP";
-constexpr qint32 HEAD_SIZE = ((sizeof("JSTP") - 1) + sizeof(quint32));
+/*///////// 请求头标识 //////////*/
+constexpr qint32 HEAD_SIZE = (sizeof(qint64)); //直接以JSON长度作为请求头标识，高4字节必须全部为0(因此JSON长度应该在2^31-1字节以内)
 
 /*///////// 定义请求类型 /////////*/
 enum class ReqType{

@@ -85,18 +85,23 @@ auto JstpPayload::toString() -> QString{
 }
 
 /**
- * 将JSTP协议头、JSON长度、JSON内容拼接到一个字节数组中，最终报文形如：
- * [4字节的JSTP头][4字节的JSON长度][N字节的JSON内容]
+ * 将头部标识、JSON长度、JSON内容拼接到一个字节数组中，最终报文形如：
+ * [4字节的头部标识][4字节的JSON长度][N字节的JSON内容]
+ * 其中，头部标识是全部为0的字节，因此和4字节的JSON长度合并到一个quint64当中
  */
 auto JstpPayload::toSendable() -> QByteArray{
     QByteArray buf;
     QByteArray json = toByteArray();
     QDataStream ds(&buf, QIODevice::WriteOnly);
     
+    qDebug() << "buf-len = " << buf.size();
     ds.setByteOrder(QDataStream::LittleEndian); //设置字节序，避免跨平台时因字节序不同导致报文错位
-    ds << QString(HEAD).toUtf8();
-    ds << static_cast<qint32>(json.size());
+    ds << static_cast<quint64>(json.size());
     ds << json;
+    
+    qDebug() << "json-len = " << json.size();
+    qDebug() << "head-len = " << sizeof(quint64);
+    qDebug() << "total-len" << buf.size();
     
     return buf;
 }
