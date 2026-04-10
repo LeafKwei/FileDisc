@@ -21,23 +21,13 @@ set(PROJECT_SOURCES
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 	qt_add_library(FileDisc STATIC
         ${PROJECT_SOURCES}
-		include/jstp/JstpServer.hpp
-		src/jstp/JstpServer.cpp
-		src/jstp/JstpClient.cpp
-		include/jstp/JstpClient.hpp
 		include/def/types.hpp
 		include/def/version.hpp
 		include/def/config.hpp
 		include/def/err.hpp
-		include/jstp/RequestHook.hpp
-		include/jstp/JstpPayload.hpp
 		src/utility/ErrBox.cpp
 		include/utility/LocalLogger.hpp
 		include/auth/KeyGenerator.hpp
-		include/jstp/jstp.hpp
-		src/jstp/JstpPayload.cpp
-		include/jstp/jobs/JstpJob.hpp
-		src/jstp/jobs/JstpJob.cpp
 		include/utility/Defer.hpp
 		include/thread/Job.hpp 
 		include/thread/JobQueue.hpp 
@@ -54,13 +44,15 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		include/thread/jobs/CntledJob.hpp
 		src/thread/jobs/CntledJob.cpp
 		src/thread/RunnerInf.cpp
-		include/jstp/JstpEmiter.hpp
-		include/jstp/jobs/ReqHostJob.hpp
-		src/jstp/jobs/ReqHostJob.cpp
 		include/utility/StaticKit.hpp
 		src/utility/StaticKit.cpp
-		include/jstp/jobs/ReqFileJob.hpp
-		src/jstp/jobs/ReqFileJob.cpp
+		
+		include/jftp/jftp.hpp
+		src/jftp/jftp_holder.cpp
+		include/jftp/req/JftpRequest.hpp
+		include/jftp/rsp/JftpResponse.hpp
+		include/jftp/JftpClient.hpp
+		include/jftp/JftpServer.hpp
     )
     
     qt_add_executable(FDServerCLI

@@ -14,5 +14,7 @@ struct Result{
     E err;
 };
 
+using idtype = qint32;  //用于各种id标识的类型
+
 FILEDISC_END
 #endif

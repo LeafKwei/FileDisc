@@ -8,7 +8,7 @@ FILEDISC_BEGIN
 class CntledJob : public Job{
 public:
     CntledJob();
-    auto id() const noexcept -> qint32 override;
+    auto id() const noexcept -> idtype override;
     auto run() noexcept -> ErrCode override;
     
 private:

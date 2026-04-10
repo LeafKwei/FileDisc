@@ -22,8 +22,8 @@ private:
     JobQueuePtr jobqptr_;
 
 signals:
-    void to_jobStart(qint32 jobid); //线程获取到任务并开始执行时
-    void to_jobDone(qint32 jobid, ErrCode err); //线程将任务执行完毕后
+    void to_jobStart(idtype jobid); //线程获取到任务并开始执行时
+    void to_jobDone(idtype jobid, ErrCode err); //线程将任务执行完毕后
 
 public slots:
     void run();

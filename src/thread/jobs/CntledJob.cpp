@@ -6,7 +6,7 @@ CntledJob::CntledJob()
 
 }
 
-auto CntledJob::id() const noexcept -> qint32{
+auto CntledJob::id() const noexcept -> idtype{
     /* 空实现 */
     return 0;
 }

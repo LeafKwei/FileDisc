@@ -83,11 +83,11 @@ auto ThreadManager::updateManager(QThread *thread, ThreadRunner *runner) -> void
     threads_.push_back({thread, runner});
 }
 
-void ThreadManager::at_jobStart(qint32 jobid){
+void ThreadManager::at_jobStart(idtype jobid){
     inf_.setFreeThreadsCount(inf_.countFreeThreads() - 1);
 }
 
-void ThreadManager::at_jobDone(qint32 jobid, ErrCode err){
+void ThreadManager::at_jobDone(idtype jobid, ErrCode err){
     emit to_jobFinished(jobid, err);
     inf_.setFreeThreadsCount(inf_.countFreeThreads() + 1);
 }

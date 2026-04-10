@@ -39,11 +39,11 @@ private:
     JobQueuePtr jobqptr_;
     
 signals:
-    void to_jobFinished(qint32 jobid, ErrCode err);
+    void to_jobFinished(idtype jobid, ErrCode err);
     
 public slots:
-    void at_jobStart(qint32 jobid);
-    void at_jobDone(qint32 jobid, ErrCode err);
+    void at_jobStart(idtype jobid);
+    void at_jobDone(idtype jobid, ErrCode err);
 };
 
 FILEDISC_END

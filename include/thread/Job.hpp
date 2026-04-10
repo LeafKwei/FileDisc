@@ -12,12 +12,11 @@ class ThreadRunner;
 class Job{
 public:
     virtual ~Job() noexcept =default;
-    virtual auto id() const noexcept -> qint32 =0;  //获取任务ID
+    virtual auto id() const noexcept -> idtype =0;  //获取任务ID
     virtual auto run() noexcept -> ErrCode =0; //执行任务
 
 private:
-    /* cntl函数仅对一部分类型开放，所以将这些类型声明为友元 */
-    friend class QuitedJob;
+    /* cntl函数仅对一部分类型开放，所以将这些类型声明为友元(子类可之间覆写基类的private virtual函数，所以无需声明为友元) */
     friend class ThreadRunner;
     virtual auto cntl(RunnerInf &inf) -> void;    //对ThreadRunner进行控制
 };
