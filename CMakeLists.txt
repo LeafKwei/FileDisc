@@ -49,6 +49,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		
 		include/jftp/jftp.hpp
 		src/jftp/jftp_holder.cpp
+		include/jftp/JftpIO.hpp
 		include/jftp/req/JftpRequest.hpp
 		include/jftp/rsp/JftpResponse.hpp
 		include/jftp/JftpClient.hpp

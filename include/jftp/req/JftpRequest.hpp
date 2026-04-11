@@ -3,11 +3,15 @@
 
 #include "def/types.hpp"
 #include "jftp/jftp.hpp"
+#include "jftp/JftpIO.hpp"
 FILEDISC_BEGIN
 
-class JftpRequest{
+/*///////// JFTP协议的请求接口，所有请求都继承自此接口 /////////*/
+class JftpRequest : public JftpIO{
 public:
-    auto type() const noexcept -> reqtype;
+    virtual ~JftpRequest() noexcept =default;
+    auto getType() const noexcept -> reqtype;
+    auto setType(reqtype type) const noexcept -> void;
 };
 
 FILEDISC_END
