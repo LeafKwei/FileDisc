@@ -49,11 +49,19 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 		
 		include/jftp/jftp.hpp
 		src/jftp/jftp_holder.cpp
-		include/jftp/JftpIO.hpp
 		include/jftp/req/JftpRequest.hpp
 		include/jftp/rsp/JftpResponse.hpp
 		include/jftp/JftpClient.hpp
 		include/jftp/JftpServer.hpp
+		include/jftp/io/JftpIO.hpp
+		include/jftp/helper/RequestHelper.hpp
+		include/jftp/helper/ResponseHelper.hpp
+		include/jftp/io/TcpWrapper.hpp
+		include/jftp/io/UdpWrapper.hpp
+		include/jftp/job/TcpReqJob.hpp
+		include/jftp/job/UdpReqJob.hpp
+		include/jftp/job/TcpRspJob.hpp
+		include/jftp/job/UdpRspJob.hpp
     )
     
     qt_add_executable(FDServerCLI

@@ -12,15 +12,16 @@ using ErrStr = QString;
 /* 将程序中的错误枚举为错误码 */
 enum class ErrCode{
     Ok = 0,
-    Busy,
-    Memory,
-    LocalNetwork,
-    JobInit,
-    TcpListen,
-    TcpConne,
-    UdpBind,
-    UdpSend,
-    BadJson,
+    Busy,  //资源暂不可用
+    NoMem, //内存不足
+    LocalNetwork,  //本地网络不可用
+    Closed,  //文件关闭
+    JobInit, //Job初始化错误
+    TcpListen, //TCP监听出错
+    TcpConne,  //TCP连接出错
+    UdpBind,   //UDP绑定出错
+    UdpSend,   //UDP发送出错
+    BadJson,   //Json格式有误
     
 };
 
